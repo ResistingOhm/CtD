@@ -1,26 +1,39 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class ChessGrid : MonoBehaviour
 {
-    [SerializeField]
-    private Material material;
+    private SpriteRenderer s_renderer;
 
     [SerializeField]
-    private Color gridMainColor;
-    [SerializeField]
-    private Color gridLineColor;
+    private SpriteRenderer mainColor_renderer;
+
+    private Vector2Int gridIndex;
+
+    public void OnPointerEnter()
+    {
+        s_renderer.enabled = true;
+    }
+
+    public void OnPointerExit()
+    {
+        s_renderer.enabled = false;
+    }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        material = GetComponent<SpriteRenderer>().material;
+        s_renderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetIndex(Vector2Int index)
     {
-        
+        gridIndex = index;
+    }
+
+    public void SetMainColor(Color color)
+    {
+        mainColor_renderer.color = color;
     }
 }
