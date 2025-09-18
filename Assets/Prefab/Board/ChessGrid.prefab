@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8483675409497213745}
   - component: {fileID: 6922453171487140146}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: MainColor
-  m_TagString: Untagged
+  m_TagString: Board
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,9 +100,9 @@ GameObject:
   - component: {fileID: 6504345698226608107}
   - component: {fileID: 2060824519535118526}
   - component: {fileID: -7064119741285983412}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ChessGrid
-  m_TagString: Untagged
+  m_TagString: Board
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -237,7 +237,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainColor_renderer: {fileID: 6922453171487140146}
-  gridMainColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &-7064119741285983412
 MonoBehaviour:
   m_ObjectHideFlags: 0

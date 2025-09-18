@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class ChessGrid : MonoBehaviour
 {
@@ -8,7 +8,8 @@ public class ChessGrid : MonoBehaviour
     [SerializeField]
     private SpriteRenderer mainColor_renderer;
 
-    private Vector2Int gridIndex;
+    [SerializeField]
+    private List<ChessGrid> neighborGrid = new List<ChessGrid>();
 
     public void OnPointerEnter()
     {
@@ -27,13 +28,27 @@ public class ChessGrid : MonoBehaviour
         s_renderer = GetComponent<SpriteRenderer>();
     }
 
-    public void SetIndex(Vector2Int index)
+    public void SetNeighbor(ChessGrid g)
     {
-        gridIndex = index;
+        neighborGrid.Add(g);
     }
 
     public void SetMainColor(Color color)
     {
         mainColor_renderer.color = color;
+    }
+}
+
+public class CellData
+{
+    public byte cost;
+    public ushort bestCost;
+    public Vector2Int dir;
+
+    public CellData()
+    {
+        this.cost = 1;
+        this.bestCost = ushort.MaxValue;
+        this.dir = Vector2Int.zero;
     }
 }

@@ -20,14 +20,41 @@ public class ChessBoard : MonoBehaviour
 
         for (int x = 0; x < boardSize.x; x++)
         {
+            bool isBlack = x%2==0? true : false;
+
             for (int y = 0; y < boardSize.y; y++)
             {
                 Vector3 worldPos = new Vector3(boardStartPosition.x + gridDiameter * x + gridRadius,boardStartPosition.y +  gridDiameter * y + gridRadius, 0);
                 GameObject g = Instantiate(chessGrid, worldPos, Quaternion.identity);
                 g.transform.SetParent(this.transform);
-
-                g.GetComponent<ChessGrid>().SetIndex(new Vector2Int(x,y));
+                g.GetComponent<ChessGrid>().SetMainColor(isBlack? Color.black: Color.white);
                 board[x, y] = g.GetComponent<ChessGrid>();
+                isBlack = !isBlack;
+            }
+        }
+
+        for (int x = 0; x < boardSize.x; x++)
+        {
+            for (int y = 0; y < boardSize.y; y++)
+            {
+                if (x > 0)
+                {
+                    board[x, y].SetNeighbor(board[x - 1, y]);
+                }
+                if (x < boardSize.x - 1)
+                {
+                    board[x, y].SetNeighbor(board[x + 1, y]);
+                }
+
+                if (y > 0)
+                {
+                    board[x, y].SetNeighbor(board[x, y - 1]);
+                }
+                if (y < boardSize.y - 1)
+                {
+                    board[x, y].SetNeighbor(board[x, y + 1]);
+                }
+
             }
         }
     }
