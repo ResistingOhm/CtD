@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TerrainUtils;
 
 public class ChessGrid : MonoBehaviour
 {
@@ -10,6 +12,10 @@ public class ChessGrid : MonoBehaviour
 
     [SerializeField]
     private List<ChessGrid> neighborGrid = new List<ChessGrid>();
+
+    private int obstacleMask;
+
+    public Vector2Int gridIndex;
 
     public CellData allyMap = new CellData();
     public CellData enemyMap = new CellData();
@@ -29,6 +35,7 @@ public class ChessGrid : MonoBehaviour
     void Start()
     {
         s_renderer = GetComponent<SpriteRenderer>();
+        obstacleMask = LayerMask.GetMask("Unit", "Obstacle");
     }
 
     public void SetNeighbor(ChessGrid g)
@@ -41,42 +48,96 @@ public class ChessGrid : MonoBehaviour
         mainColor_renderer.color = color;
     }
 
-    void FixedUpdate()
+    public void SetIndex(int x, int y)
     {
-        //Set Target and Give Cost to CellData
+        gridIndex = new Vector2Int(x, y);
+    }
 
-
-        //Make IntegrationField
-        foreach(ChessGrid g in neighborGrid)
+    public void ResetCost()
+    {
+        //Reset
+        allyMap.ResetToDefault();
+        enemyMap.ResetToDefault();
+        /*
+        switch (tag)
         {
-            CreateAllyIntegrationField(g.allyMap);
-            CreateEnemyIntegrationField(g.enemyMap);
+            case "Enemy":
+                allyMap.bestCost = 0;
+                allyMap.target = obstacles.gameObject;
+                enemyMap.cost = byte.MaxValue;
+                break;
+            case "Ally":
+                enemyMap.bestCost = 0;
+                enemyMap.target = obstacles.gameObject;
+                allyMap.cost = byte.MaxValue;
+                break;
+            case "Obstacle":
+                enemyMap.cost = byte.MaxValue;
+                allyMap.cost = byte.MaxValue;
+                break;
+            default:
+                break;
         }
+        */
+    }
 
+    public void SetUnitDirection()
+    {
         //Give Unit direction
-        foreach(ChessGrid g in neighborGrid)
+        ushort bestPath_a = allyMap.bestCost;
+        ushort bestPath_e = enemyMap.bestCost;
+        foreach (ChessGrid g in neighborGrid)
         {
-            ushort bestPath = 0;
+            if (g.allyMap.bestCost < bestPath_a)
+            {
+                bestPath_a = g.allyMap.bestCost;
+                allyMap.target = g.allyMap.target;
+                allyMap.dir = g.gridIndex - this.gridIndex;
+            }
+
+            if (g.enemyMap.bestCost < bestPath_e)
+            {
+                bestPath_e = g.enemyMap.bestCost;
+                enemyMap.target = g.enemyMap.target;
+                enemyMap.dir = g.gridIndex - this.gridIndex;
+            }
         }
     }
 
-    private void CreateAllyIntegrationField(CellData a)
+    public void CreateAllyIntegrationField()
     {
-        if (a.cost == byte.MaxValue) { return; }
-        if (a.bestCost + a.cost < allyMap.bestCost)
-        {
-            allyMap.bestCost = (ushort)(a.bestCost + a.cost);
-            allyMap.target = a.target;
+        foreach (ChessGrid g in neighborGrid) {
+            CellData a = g.allyMap;
+            if (a.cost == byte.MaxValue) { continue; }
+            if ((int)a.bestCost + a.cost < allyMap.bestCost)
+            {
+                allyMap.bestCost = (ushort)(a.bestCost + a.cost);
+                continue;
+            }
+            g.CreateAllyIntegrationField();
         }
     }
 
-    private void CreateEnemyIntegrationField(CellData e)
+    public void CreateEnemyIntegrationField()
     {
-        if (e.cost == byte.MaxValue) { return; }
-        if (e.bestCost + e.cost < enemyMap.bestCost)
+        foreach (ChessGrid g in neighborGrid)
         {
-            enemyMap.bestCost = (ushort)(e.bestCost + e.cost);
-            enemyMap.target = e.target;
+            CellData e = g.enemyMap;
+            if (e.cost == byte.MaxValue) { continue; }
+            if ((int)e.bestCost + e.cost < enemyMap.bestCost)
+            {
+                enemyMap.bestCost = (ushort)(e.bestCost + e.cost);
+                continue;
+            }
+            g.CreateEnemyIntegrationField();
+        }
+    }
+
+    public void CostEnter(GameObject u, string tag)
+    {
+        switch (tag)
+        {
+            
         }
     }
 }
@@ -86,7 +147,7 @@ public class CellData
     public byte cost;
     public ushort bestCost;
     public Vector2Int dir;
-    public Unit target;
+    public GameObject target;
 
     public CellData()
     {
