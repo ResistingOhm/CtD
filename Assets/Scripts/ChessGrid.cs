@@ -9,13 +9,19 @@ public class ChessGrid : MonoBehaviour
     private SpriteRenderer mainColor_renderer;
 
     [SerializeField]
-    private List<ChessGrid> neighborGrid = new List<ChessGrid>();
+    private Dictionary<string, ChessGrid> neighborGrid = new Dictionary<string, ChessGrid>();
+
+    public Vector2Int hasLeftRightNeighbor = Vector2Int.zero;
+
+    public Vector2Int hasDownUpNeighbor = Vector2Int.zero;
 
     private int costMask;
 
     public Vector2Int gridIndex;
 
     public byte cost = 1;
+
+    public Vector2Int weightDir = Vector2Int.zero;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -27,13 +33,46 @@ public class ChessGrid : MonoBehaviour
     void FixedUpdate()
     {
         Collider2D costObject = Physics2D.OverlapBox(this.transform.position, Vector2.one * 0.5f, 0f, costMask);
-        if (costObject != null) { cost = byte.MaxValue; return; }
-        cost = 1;
+        if (costObject == null)
+        {
+            cost = 1;
+            weightDir = Vector2Int.zero;
+            return;
+        }
+
+        cost = byte.MaxValue;
+
+        if (hasLeftRightNeighbor == new Vector2Int(1,0))    //Only Left neighbor
+        {
+            weightDir.x = -1;
+        }
+        else if(hasLeftRightNeighbor == new Vector2Int(0,1))   //Only Right neighbor
+        {
+            weightDir.x = 1;
+        }
+        else if(hasLeftRightNeighbor == new Vector2Int(1,1))   //Left & Right neighbor
+        {
+            //Is there Obstacle?
+            //
+        }
+
+        if (hasDownUpNeighbor == new Vector2Int(1, 0))  //Only Down neighbor
+        {
+            weightDir.y = -1;
+        }
+        else if (hasDownUpNeighbor == new Vector2Int(0, 1)) //Only Up neighbor
+        {
+            weightDir.y = 1;
+        }
+        else if (hasDownUpNeighbor == new Vector2Int(1, 1)) //Down & Up neighbor
+        {
+
+        }
     }
 
-    public void SetNeighbor(ChessGrid g)
+    public void SetNeighbor(string dir, ChessGrid g)
     {
-        neighborGrid.Add(g);
+        neighborGrid.Add(dir, g);
     }
 
     public void SetMainColor(Color color)

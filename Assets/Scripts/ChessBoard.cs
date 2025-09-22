@@ -38,22 +38,44 @@ public class ChessBoard : MonoBehaviour
         {
             for (int y = 0; y < boardSize.y; y++)
             {
-                if (x > 0)
+                if (0 < x)
                 {
-                    board[x, y].SetNeighbor(board[x - 1, y]);
+                    board[x, y].SetNeighbor("Left", board[x - 1, y]);
+                    board[x, y].hasLeftRightNeighbor += new Vector2Int(1, 0);
+
+                    if (0 < y)
+                    {
+                        board[x, y].SetNeighbor("LeftDown", board[x - 1, y - 1]);
+                    }
+                    if (y < boardSize.y - 1)
+                    {
+                        board[x, y].SetNeighbor("LeftUp", board[x - 1, y + 1]);
+                    }
                 }
                 if (x < boardSize.x - 1)
                 {
-                    board[x, y].SetNeighbor(board[x + 1, y]);
+                    board[x, y].SetNeighbor("Right", board[x + 1, y]);
+                    board[x, y].hasLeftRightNeighbor += new Vector2Int(0, 1);
+
+                    if (0 < y)
+                    {
+                        board[x, y].SetNeighbor("RightDown", board[x + 1, y - 1]);
+                    }
+                    if (y < boardSize.y - 1)
+                    {
+                        board[x, y].SetNeighbor("RightUp", board[x + 1, y + 1]);
+                    }
                 }
 
-                if (y > 0)
+                if (0 < y)
                 {
-                    board[x, y].SetNeighbor(board[x, y - 1]);
+                    board[x, y].SetNeighbor("Down", board[x, y - 1]);
+                    board[x, y].hasDownUpNeighbor += new Vector2Int(1, 0);
                 }
                 if (y < boardSize.y - 1)
                 {
-                    board[x, y].SetNeighbor(board[x, y + 1]);
+                    board[x, y].SetNeighbor("Up", board[x, y + 1]);
+                    board[x, y].hasDownUpNeighbor += new Vector2Int(0, 1);
                 }
 
             }
@@ -73,10 +95,6 @@ public class ChessBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log(Input.mousePosition);
-            Destroy(GetGridFromWorldPos(Camera.main.ScreenToWorldPoint(Input.mousePosition)).gameObject);
-        }
+
     }
 }
