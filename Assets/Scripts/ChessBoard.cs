@@ -60,30 +60,23 @@ public class ChessBoard : MonoBehaviour
         }
     }
 
-    public void UpdatePathField()
+    public ChessGrid GetGridFromWorldPos(Vector2 worldPos)
     {
-        //Reset Cost
-        foreach(ChessGrid g in board)
-        {
-            g.ResetCost();
-        }
+        float _x = (worldPos.x - boardStartPosition.x)/gridDiameter;
+        float _y = (worldPos.y - boardStartPosition.y)/gridDiameter;
 
-        //Give Special Cost to grid
-
-        //Calculate bestcost(Start from destination)
-        //g.CreateAllyIntegrationField();
-        //g.CreateEnemyIntegrationField();
-
-        //Make Direction to move
-        foreach(ChessGrid g in board)
-        {
-            g.SetUnitDirection();
-        }
+        int x = Mathf.FloorToInt(_x);
+        int y = Mathf.FloorToInt(_y);
+        return board[x,y];
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log(Input.mousePosition);
+            Destroy(GetGridFromWorldPos(Camera.main.ScreenToWorldPoint(Input.mousePosition)).gameObject);
+        }
     }
 }
