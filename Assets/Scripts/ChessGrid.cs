@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TerrainUtils;
@@ -8,12 +9,8 @@ public class ChessGrid : MonoBehaviour
     [SerializeField]
     private SpriteRenderer mainColor_renderer;
 
-    [SerializeField]
-    private Dictionary<string, ChessGrid> neighborGrid = new Dictionary<string, ChessGrid>();
-
-    public Vector2Int hasLeftRightNeighbor = Vector2Int.zero;
-
-    public Vector2Int hasDownUpNeighbor = Vector2Int.zero;
+    private List<ChessGrid> neighborGrid = new List<ChessGrid>();
+    private List<ChessGrid> neighborDiagonalGrid = new List<ChessGrid>();
 
     private int costMask;
 
@@ -21,7 +18,11 @@ public class ChessGrid : MonoBehaviour
 
     public byte cost = 1;
 
-    public Vector2Int weightDir = Vector2Int.zero;
+    public int fCost = 0;
+
+    public int gCost = 0;
+
+    public ChessGrid parentGrid;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -36,43 +37,34 @@ public class ChessGrid : MonoBehaviour
         if (costObject == null)
         {
             cost = 1;
-            weightDir = Vector2Int.zero;
             return;
         }
 
         cost = byte.MaxValue;
+    }
 
-        if (hasLeftRightNeighbor == new Vector2Int(1,0))    //Only Left neighbor
+    public void SetNeighbor(ChessGrid g, bool tag)
+    {
+        switch (tag)
         {
-            weightDir.x = -1;
-        }
-        else if(hasLeftRightNeighbor == new Vector2Int(0,1))   //Only Right neighbor
-        {
-            weightDir.x = 1;
-        }
-        else if(hasLeftRightNeighbor == new Vector2Int(1,1))   //Left & Right neighbor
-        {
-            //Is there Obstacle?
-            //
-        }
-
-        if (hasDownUpNeighbor == new Vector2Int(1, 0))  //Only Down neighbor
-        {
-            weightDir.y = -1;
-        }
-        else if (hasDownUpNeighbor == new Vector2Int(0, 1)) //Only Up neighbor
-        {
-            weightDir.y = 1;
-        }
-        else if (hasDownUpNeighbor == new Vector2Int(1, 1)) //Down & Up neighbor
-        {
-
+            case true:
+                neighborGrid.Add(g);
+                break;
+            case false:
+                neighborDiagonalGrid.Add(g);
+                break;
         }
     }
 
-    public void SetNeighbor(string dir, ChessGrid g)
+    public List<ChessGrid> GetNeighbor(bool tag)
     {
-        neighborGrid.Add(dir, g);
+        switch (tag)
+        {
+            case true:
+                return neighborGrid;
+            case false:
+                return neighborGrid.Concat(neighborDiagonalGrid).ToList();
+        }
     }
 
     public void SetMainColor(Color color)
@@ -84,4 +76,12 @@ public class ChessGrid : MonoBehaviour
     {
         gridIndex = new Vector2Int(x, y);
     }
+
+    public void ResetNodeData()
+    {
+        fCost = 0;
+        gCost = 0;
+        parentGrid = null;
+    }
 }
+

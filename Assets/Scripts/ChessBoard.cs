@@ -1,3 +1,6 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ChessBoard : MonoBehaviour
@@ -40,42 +43,38 @@ public class ChessBoard : MonoBehaviour
             {
                 if (0 < x)
                 {
-                    board[x, y].SetNeighbor("Left", board[x - 1, y]);
-                    board[x, y].hasLeftRightNeighbor += new Vector2Int(1, 0);
+                    board[x, y].SetNeighbor(board[x - 1, y], true);
 
                     if (0 < y)
                     {
-                        board[x, y].SetNeighbor("LeftDown", board[x - 1, y - 1]);
+                        board[x, y].SetNeighbor(board[x - 1, y - 1], false);
                     }
                     if (y < boardSize.y - 1)
                     {
-                        board[x, y].SetNeighbor("LeftUp", board[x - 1, y + 1]);
+                        board[x, y].SetNeighbor(board[x - 1, y + 1], false);
                     }
                 }
                 if (x < boardSize.x - 1)
                 {
-                    board[x, y].SetNeighbor("Right", board[x + 1, y]);
-                    board[x, y].hasLeftRightNeighbor += new Vector2Int(0, 1);
+                    board[x, y].SetNeighbor(board[x + 1, y], true);
 
                     if (0 < y)
                     {
-                        board[x, y].SetNeighbor("RightDown", board[x + 1, y - 1]);
+                        board[x, y].SetNeighbor(board[x + 1, y - 1],false);
                     }
                     if (y < boardSize.y - 1)
                     {
-                        board[x, y].SetNeighbor("RightUp", board[x + 1, y + 1]);
+                        board[x, y].SetNeighbor(board[x + 1, y + 1], false);
                     }
                 }
 
                 if (0 < y)
                 {
-                    board[x, y].SetNeighbor("Down", board[x, y - 1]);
-                    board[x, y].hasDownUpNeighbor += new Vector2Int(1, 0);
+                    board[x, y].SetNeighbor(board[x, y - 1], true);
                 }
                 if (y < boardSize.y - 1)
                 {
-                    board[x, y].SetNeighbor("Up", board[x, y + 1]);
-                    board[x, y].hasDownUpNeighbor += new Vector2Int(0, 1);
+                    board[x, y].SetNeighbor(board[x, y + 1], true);
                 }
 
             }
@@ -92,9 +91,79 @@ public class ChessBoard : MonoBehaviour
         return board[x,y];
     }
 
+    public ChessGrid PathFinding(ChessGrid s, ChessGrid e, bool tag)
+    {
+        List<ChessGrid> openList = new List<ChessGrid>();
+        HashSet<ChessGrid> closedList = new HashSet<ChessGrid>();
+        ChessGrid startGrid = s;
+        ChessGrid endGrid = e;
+
+        foreach(ChessGrid c in board)
+        {
+            c.ResetNodeData();
+        }
+
+        openList.Add(startGrid); 
+
+        while (openList.Count > 0)
+        {
+            ChessGrid curGrid = openList[0];
+
+            foreach (ChessGrid c in openList) //만약 openList에 다른 노드가 더 있다면, 비교해서 최선의 노드를 찾는다.
+            {
+                if (c.fCost <= curGrid.fCost)
+                { //최적의 노드를 탐색하는 과정. fcost가 가장 낮은 노드가 curNode가 된다.
+
+                    curGrid = c;
+                }
+            }
+            openList.Remove(curGrid);
+            closedList.Add(curGrid);  //closedList에 탐색을 한 현재 노드를 넣는다.    
+
+            if (curGrid == endGrid)
+            {   //현재노드가 도착지라면 탐색을 종료하고 endNode부터 역방향으로 탐색을 시작한다.
+                return FindNextGrid(startGrid, curGrid);
+            }
+
+            foreach (ChessGrid grid in curGrid.GetNeighbor(tag))
+            {
+                if (closedList.Contains(grid)) continue;
+
+                Vector2Int dirVec = grid.gridIndex - endGrid.gridIndex;
+                int distance = dirVec.x + dirVec.y;
+                int tempg = curGrid.gCost + grid.cost;
+
+                if (tempg < grid.gCost || !openList.Contains(grid))
+                { //오픈리스트에 위 노드가 없거나,있어도 새로 구한 gcost 가 더 작을경우엔
+                    //gcost를 다시 계산한 값으로 넣어준다. 또한 par노드 또한 변경해준다.
+                    grid.gCost = tempg;
+                    grid.fCost = grid.gCost + distance;
+                    grid.parentGrid = curGrid;
+
+                    if (!openList.Contains(grid)) { openList.Add(grid); }
+                }
+                
+            }
+        }
+        return null; //만약 모든 노드를 탐색했는데 목적지를 찾지 못 하면 null값을 반환
+    }
+
+    private ChessGrid FindNextGrid(ChessGrid s, ChessGrid e)
+    {
+        ChessGrid curGrid = e;
+        while (curGrid.parentGrid != s)
+        {
+            curGrid = curGrid.parentGrid;
+        }
+        return curGrid;
+    }
+
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetMouseButtonDown(0))
+        {
+            PathFinding(board[0, 0], board[5, 7], true);
+        }
     }
 }
