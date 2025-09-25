@@ -127,6 +127,7 @@ public class ChessBoard : MonoBehaviour
 
             foreach (ChessGrid grid in curGrid.GetNeighbor(tag))
             {
+                if (grid.cost == byte.MaxValue) continue;
                 if (closedList.Contains(grid)) continue;
 
                 Vector2Int dirVec = grid.gridIndex - endGrid.gridIndex;
