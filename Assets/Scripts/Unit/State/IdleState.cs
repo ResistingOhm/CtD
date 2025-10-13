@@ -2,7 +2,8 @@ using UnityEngine;
 
 
 /// <summary>
-/// Idle mean unit has target, but it can't move(no path) and can't attack(out of range)
+/// Idle mean unit don't have target, or it can't move(no path) and can't attack(out of range)
+/// This unit should find target(closest enemy) and attack or find path to it
 /// </summary>
 public class IdleState : IUnitState
 {
@@ -20,14 +21,7 @@ public class IdleState : IUnitState
     }
     public void FixedUpdate()
     {
-        //Set Target Phase ---------------------
-        //if unit's target is null?
-            //if false(unit already have target), if target is in attack range?
-                //if true, attack.
-                //if false, now unit lost target. set target null.
-            //if true(unit didn't have target yet), find closest enemy unit and save it as target
-                //if target is in attack range, attack.
-                //if taget is out of attack range, move.(PathFinding)
+        //Nothing happen?
     }
 
     public void Update()
@@ -39,16 +33,26 @@ public class IdleState : IUnitState
             return;
         }
 
-        if () //check unit has target and there is path, but out of attack range
+        if () //if target is null
         {
-            //unit.SetState(unit.movingState);
-            return;
+            find target
         }
 
         if () //there is target in attack range
         {
             //unit.SetState(unit.attackingState);
+            return;
         }
+
+        //find path
+
+        if () //if there's path to target
+        {
+            //set Waypoint
+            //unit.SetState(unit.movingState);
+            return;
+        }
+
         */
     }
 

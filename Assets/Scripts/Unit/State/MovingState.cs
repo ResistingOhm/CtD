@@ -34,16 +34,29 @@ public class MovingState : IUnitState
         //If unit arrive at way point
         //set unit position to center of grid.
 
-        if () //there is target in attack range
-        {
-            //unit.SetState(unit.attackingState);
-        }
-        
-        if ()//check unit is not moving now
+        if () //there is no target (target == null)
         {
             //unit.SetState(unit.idleState);
             return;
         }
+
+        if () //there is target in attack range
+        {
+            //unit.SetState(unit.attackingState);
+            return;
+        }
+
+        //find path
+        if () //if there's path to target
+        {
+            //set Waypoint
+            return;
+        } else
+        {
+            //unit.SetState(unit.idleState);
+        }
+
+
         */
     }
 

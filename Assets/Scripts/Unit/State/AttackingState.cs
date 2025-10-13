@@ -19,13 +19,7 @@ public class AttackingState : IUnitState
 
     public void FixedUpdate()
     {
-        //if unit's target is null?
-            //if false(unit already have target), if target is in attack range?
-                //if true, keep attack.
-                //if false, now unit lost target. set target null.
-            //if true(unit didn't have target yet), find closest enemy unit and save it as target
-                //if target is in attack range, start attack.
-                //if taget is out of attack range, move.
+        //nothing happen?
     }
 
     public void Update()
@@ -37,18 +31,14 @@ public class AttackingState : IUnitState
             return;
         }
 
-        //give target damage per attack speed
-
-        if () //check unit is moving now
+        if () //there is no target in attack range (target == null || target is out of range)
         {
-            //unit.SetState(unit.movingState);
+            //unit.SetState(unit.idleState);
             return;
         }
 
-        if () //there is no target in attack range
-        {
-            //unit.SetState(unit.idleState);
-        }
+        //give target damage per attack speed
+
         */
     }
 

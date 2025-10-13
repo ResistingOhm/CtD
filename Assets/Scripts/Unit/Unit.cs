@@ -2,15 +2,68 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private UnitData unitData;
+    [Range(0, 2)]
+    private int level;
+    // item Data (max 3)
+
+    [Header("-Main Status")] //Increase when Level Up
+    private int unitMaxHealth;
+    private int unitCurrentHealth;
+    private int unitAttack;
+    private int unitDefense;
+    private int unitAttackSpeed;
+
+    [Header("-Minor Status")] //Don't increase when Level Up
+    private int unitHealthRegen;
+    private int unitLifeSteal;
+    private int unitEvade;
+    private int unitRange;
+
+    [Header("-State")]
+    private IUnitState currentState;
+    public IdleState idleState;
+    public AttackingState attackingState;
+    public MovingState movingState;
+    public DeadState deadState;
+
     void Start()
     {
-        
+        currentState = idleState;
+        RefreshStatus();
     }
 
-    // Update is called once per frame
+    void FixedUpdate()
+    {
+        currentState.FixedUpdate();
+    }
+
     void Update()
     {
-        
+        currentState.Update();
+    }
+
+    private void RefreshStatus()
+    {
+        unitMaxHealth = (int) (unitData.baseHealth * unitData.healthRate[level]);
+        unitAttack = (int) (unitData.baseAttack * unitData.attackRate[level]);
+        unitDefense = (int) (unitData.baseDefense * unitData.defenseRate[level]);
+        unitAttackSpeed = (int) (unitData.baseAttackSpeed * unitData.attackSpeedRate[level]);
+
+        unitHealthRegen = unitData.baseHealthRegen;
+        unitLifeSteal = unitData.baseLifeSteal;
+        unitEvade = unitData.baseEvade;
+        unitRange = unitData.baseRange;
+
+        //Apply Group
+        //Apply Type
+        //Apply item
+    }
+
+    public void SetState(IUnitState state)
+    {
+        currentState.Exit();
+        currentState = state;
+        currentState.Enter();
     }
 }
