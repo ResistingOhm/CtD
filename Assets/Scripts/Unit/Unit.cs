@@ -5,7 +5,7 @@ public class Unit : MonoBehaviour
     private UnitData unitData;
     [Range(0, 2)]
     private int level;
-    // item Data (max 3)
+    private ItemData[] itemData = new ItemData[3];
 
     [Header("-Main Status")] //Increase when Level Up
     private int unitMaxHealth;
@@ -57,7 +57,19 @@ public class Unit : MonoBehaviour
 
         //Apply Group
         //Apply Type
-        //Apply item
+
+        foreach(ItemData item in itemData)
+        {
+            unitMaxHealth += item.health;
+            unitAttack += item.attack;
+            unitDefense += item.defense;
+            unitAttackSpeed += item.attackSpeed;
+
+            unitHealthRegen += item.healthRegen;
+            unitLifeSteal += item.lifeSteal;
+            unitEvade += item.evade;
+            unitRange += item.range;
+        }
     }
 
     public void SetState(IUnitState state)

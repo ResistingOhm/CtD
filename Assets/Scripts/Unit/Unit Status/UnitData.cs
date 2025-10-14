@@ -23,6 +23,7 @@ public class UnitData : ScriptableObject
     public UnitGroup unitGroup;
     public UnitType unitType;
     public string unitName;
+    public int unitCost;
     public Sprite unitSprite;
 
     [Header("-Main Status")] //Increase when Level Up
