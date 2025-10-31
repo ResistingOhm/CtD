@@ -43,6 +43,11 @@ public class Unit : MonoBehaviour
         currentState.Update();
     }
 
+    public int GetAttackSpeed()
+    {
+        return unitAttackSpeed;
+    }
+
     private void RefreshStatus()
     {
         unitMaxHealth = (int) (unitData.baseHealth * unitData.healthRate[level]);
@@ -70,6 +75,13 @@ public class Unit : MonoBehaviour
             unitEvade += item.evade;
             unitRange += item.range;
         }
+    }
+
+    public void GetDamage(int damage)
+    {
+        int i = damage - damage * unitDefense / 100;
+        if (i > 0) unitCurrentHealth -= i;
+        if (unitCurrentHealth <= 0) SetState(deadState);
     }
 
     public void SetState(IUnitState state)

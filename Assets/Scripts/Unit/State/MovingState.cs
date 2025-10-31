@@ -25,11 +25,6 @@ public class MovingState : IUnitState
     public void Update()
     {
         /*
-        if () //check unit hp is lower than 0
-        {
-            //unit.SetState(unit.deadState);
-            return;
-        }
 
         //If unit arrive at way point
         //set unit position to center of grid.

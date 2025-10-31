@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -25,11 +26,6 @@ public class AttackingState : IUnitState
     public void Update()
     {
         /*
-        if () //check unit hp is lower than 0
-        {
-            //unit.SetState(unit.deadState);
-            return;
-        }
 
         if () //there is no target in attack range (target == null || target is out of range)
         {

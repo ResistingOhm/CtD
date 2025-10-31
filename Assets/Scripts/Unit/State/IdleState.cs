@@ -27,12 +27,7 @@ public class IdleState : IUnitState
     public void Update()
     {
         /*
-        if () //check unit hp is lower than 0
-        {
-            //unit.SetState(unit.deadState);
-            return;
-        }
-
+         
         if () //if target is null
         {
             find target
