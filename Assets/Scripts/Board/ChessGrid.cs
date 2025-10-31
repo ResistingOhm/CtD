@@ -83,5 +83,12 @@ public class ChessGrid : MonoBehaviour
         gCost = 0;
         parentGrid = null;
     }
+
+    public int GetDistance(ChessGrid grid)
+    {
+        Vector2Int dirVec = grid.gridIndex - gridIndex;
+
+        return Mathf.Abs(dirVec.x + dirVec.y);
+    }
 }
 

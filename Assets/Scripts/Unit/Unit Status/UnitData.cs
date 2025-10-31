@@ -1,24 +1,24 @@
 using UnityEngine;
 
+public enum UnitGroup
+{
+    None,
+    Royal,
+    Forest,
+    Undead,
+    Hero,
+}
+public enum UnitType
+{
+    Knight,
+    Warrior,
+    Archer,
+    Magician,
+}
+
 [CreateAssetMenu(fileName = "EnemyData", menuName = "Scriptable Objects/EnemyData")]
 public class UnitData : ScriptableObject
 {
-    public enum UnitGroup
-    {
-        None,
-        Royal,
-        Forest,
-        Undead,
-        Hero,
-    }
-    public enum UnitType
-    {
-        Knight,
-        Warrior,
-        Archer,
-        Magician,
-    }
-
     [Header("-Basic")]
     public UnitGroup unitGroup;
     public UnitType unitType;

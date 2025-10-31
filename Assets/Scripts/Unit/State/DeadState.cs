@@ -21,18 +21,13 @@ public class DeadState: IUnitState
         deadTime = 0f;
     }
 
-    public void FixedUpdate()
-    {
-        //Nothing happen?
-    }
-
     public void Update()
     {
         deadTime += Time.deltaTime;
 
         if (deadTime > 0.7f)
         {
-            //unit disabled
+            unit.gameObject.SetActive(false);
         }
     }
 

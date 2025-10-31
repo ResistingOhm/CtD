@@ -7,6 +7,7 @@ using UnityEngine;
 public class AttackingState : IUnitState
 {
     private Unit unit;
+    private float currentTime;
 
     public AttackingState(Unit u)
     {
@@ -16,30 +17,31 @@ public class AttackingState : IUnitState
     public void Enter()
     {
         //Set Animation or Sprite to Attack
-    }
-
-    public void FixedUpdate()
-    {
-        //nothing happen?
+        currentTime = 0f;
     }
 
     public void Update()
     {
-        /*
+        //give target damage per attack speed
 
-        if () //there is no target in attack range (target == null || target is out of range)
+        if (unit.target == null || !unit.IsTargetInRange())
         {
-            //unit.SetState(unit.idleState);
+            unit.SetState(unit.idleState);
             return;
         }
 
-        //give target damage per attack speed
+        if (currentTime > unit.GetAttackSpeed())
+        {
+            currentTime = 0f;
+            //Attack
+        }
 
-        */
+        currentTime += Time.deltaTime;
     }
 
     public void Exit()
     {
         //nothing happen?
     }
+
 }

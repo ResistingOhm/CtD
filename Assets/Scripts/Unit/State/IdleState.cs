@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.InputManagerEntry;
 
 
 /// <summary>
@@ -19,36 +20,32 @@ public class IdleState : IUnitState
     {
         //Set Animation or Sprite to Idle
     }
-    public void FixedUpdate()
-    {
-        //Nothing happen?
-    }
 
     public void Update()
     {
-        /*
-         
-        if () //if target is null
+        if (unit.target == null)
         {
-            find target
-        }
-
-        if () //there is target in attack range
-        {
-            //unit.SetState(unit.attackingState);
+            //Find target
             return;
         }
 
-        //find path
-
-        if () //if there's path to target
+        if (unit.IsTargetInRange())
         {
-            //set Waypoint
-            //unit.SetState(unit.movingState);
+            unit.SetState(unit.attackingState);
             return;
         }
 
-        */
+        ChessGrid grid = unit.FindNextGrid();
+
+        if (grid != null)
+        {
+            grid.cost = byte.MaxValue;
+            unit.currentPos.cost = 1;
+            unit.currentPos = grid;
+            unit.SetState(unit.movingState);
+            return;
+        }
+
     }
 
     public void Exit()

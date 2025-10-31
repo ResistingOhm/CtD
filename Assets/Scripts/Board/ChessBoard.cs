@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ChessBoard : MonoBehaviour
 {
+    public static ChessBoard Instance { get; private set; }
+
     [SerializeField]
     private GameObject chessGrid;
 
@@ -16,6 +18,15 @@ public class ChessBoard : MonoBehaviour
     private Vector2Int boardSize;
     [SerializeField]
     private Vector2Int boardStartPosition;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     void Start()
     {
@@ -91,7 +102,7 @@ public class ChessBoard : MonoBehaviour
         return board[x,y];
     }
 
-    public ChessGrid PathFinding(ChessGrid s, ChessGrid e, bool tag)
+    public ChessGrid PathFinding(ChessGrid s, ChessGrid e, bool tag = true)
     {
         List<ChessGrid> openList = new List<ChessGrid>();
         HashSet<ChessGrid> closedList = new HashSet<ChessGrid>();

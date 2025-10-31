@@ -1,11 +1,20 @@
+using System.Collections;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
+    [SerializeField]
     private UnitData unitData;
     [Range(0, 2)]
     private int level;
     private ItemData[] itemData = new ItemData[3];
+
+    [HideInInspector]
+    public ChessGrid currentPos;
+    [HideInInspector]
+    public Unit target;
+
+    private Rigidbody2D rb;
 
     [Header("-Main Status")] //Increase when Level Up
     private int unitMaxHealth;
@@ -27,15 +36,15 @@ public class Unit : MonoBehaviour
     public MovingState movingState;
     public DeadState deadState;
 
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
     void Start()
     {
         currentState = idleState;
         RefreshStatus();
-    }
-
-    void FixedUpdate()
-    {
-        currentState.FixedUpdate();
     }
 
     void Update()
@@ -46,6 +55,15 @@ public class Unit : MonoBehaviour
     public int GetAttackSpeed()
     {
         return unitAttackSpeed;
+    }
+
+    public UnitGroup GetUnitGroup()
+    {
+        return unitData.unitGroup;
+    }
+    public UnitType GetUnitType()
+    {
+        return unitData.unitType;
     }
 
     private void RefreshStatus()
@@ -77,11 +95,32 @@ public class Unit : MonoBehaviour
         }
     }
 
+    public void SetVelocity(float p)
+    {
+        Vector2 dir = currentPos.transform.position - transform.position;
+        rb.linearVelocity = dir.normalized * p;
+    }
+
+    public void SetTarget()
+    {
+
+
+    }
     public void GetDamage(int damage)
     {
         int i = damage - damage * unitDefense / 100;
         if (i > 0) unitCurrentHealth -= i;
         if (unitCurrentHealth <= 0) SetState(deadState);
+    }
+
+    public bool IsTargetInRange()
+    {
+        return target.currentPos.GetDistance(currentPos) < unitRange;
+    }
+
+    public ChessGrid FindNextGrid()
+    {
+        return ChessBoard.Instance.PathFinding(currentPos, target.currentPos);
     }
 
     public void SetState(IUnitState state)
