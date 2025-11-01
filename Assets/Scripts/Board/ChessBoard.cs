@@ -43,6 +43,11 @@ public class ChessBoard : MonoBehaviour
                 g.transform.SetParent(this.transform);
                 g.GetComponent<ChessGrid>().SetMainColor(isBlack? Color.black: Color.white);
                 g.GetComponent<ChessGrid>().SetIndex(x, y);
+                if (y < boardSize.y / 2)
+                {
+                    g.AddComponent(typeof(DroppableObject));
+                    g.GetComponent<DroppableObject>().SetTag("Ally");
+                }
                 board[x, y] = g.GetComponent<ChessGrid>();
                 isBlack = !isBlack;
             }

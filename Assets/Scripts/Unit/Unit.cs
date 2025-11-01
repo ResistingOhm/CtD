@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Unit : MonoBehaviour
+public class Unit : MonoBehaviour, IDropHandler
 {
     [SerializeField]
     private UnitData unitData;
@@ -9,6 +10,7 @@ public class Unit : MonoBehaviour
     private int level = 0;
     private Item[] items = new Item[3];
     private UnitDeck deck;
+    private bool isDeck = false;
 
 
     [HideInInspector]
@@ -49,20 +51,40 @@ public class Unit : MonoBehaviour
 
     void Start()
     {
-        currentState = idleState;
-        SetUnitData(DataManager.unitData[0]);
+        GameManager.Instance.startFight += StartFighting;
+        GameManager.Instance.endFight += EndFighting;
+        GetComponent<DraggableObject>().dropAction += AfterDrop;
+        SetState(idleState);
         RefreshStatus();
-    }
-
-    void Update()
-    {
-        currentState.Update();
     }
 
     public void SetUnitData(UnitData u)
     {
         unitData = u;
 
+    }
+
+    public void StartFighting()
+    {
+        this.GetComponent<DraggableObject>().enabled = false;
+        StartCoroutine(DoAction());
+    }
+
+    public void EndFighting()
+    {
+        this.GetComponent<DraggableObject>().enabled = true;
+        SetState(idleState);
+        RefreshStatus();
+    }
+
+    IEnumerator DoAction()
+    {
+        WaitForSeconds w = new WaitForSeconds(0.5f);
+        while(GameManager.Instance.isRunning)
+        {
+            currentState.Update();
+            yield return w;
+        }
     }
 
     public void SetDeck(UnitDeck u)
@@ -146,6 +168,15 @@ public class Unit : MonoBehaviour
         if (unitCurrentHealth <= 0) SetState(deadState);
     }
 
+    private void AddItem(Item i)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (items[j] == null) items[j] = i;
+            break;
+        }
+    }
+
     public bool IsTargetInRange()
     {
         return target.currentPos.GetDistance(currentPos) < unitRange;
@@ -161,5 +192,11 @@ public class Unit : MonoBehaviour
         currentState.Exit();
         currentState = state;
         currentState.Enter();
+    }
+
+    public void AfterDrop(GameObject g)
+    {
+        this.transform.position = g.transform.position;
+        if (!isDeck) deck.AddUnit(this);
     }
 }

@@ -1,16 +1,28 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static GameManager Instance;
+
+    public bool isRunning = false;
+
+    public event Action startFight;
+    public event Action endFight;
+
+    void Awake()
     {
-        
+        if (Instance == null) Instance = this;
+        else Destroy(this.gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void StartFight()
     {
-        
+        startFight?.Invoke();
+    }
+
+    public void EndFight()
+    {
+        endFight?.Invoke();
     }
 }
