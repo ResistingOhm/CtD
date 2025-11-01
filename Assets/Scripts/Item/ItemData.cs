@@ -1,13 +1,12 @@
 using UnityEngine;
 using static UnitData;
 
-[CreateAssetMenu(fileName = "ItemData", menuName = "Scriptable Objects/ItemData")]
-public class ItemData : ScriptableObject
+[System.Serializable]
+public class ItemData
 {
     [Header("-Basic")]
     public string itemName;
     public int itemCost;
-    public Sprite itemSprite;
 
     [Header("-Status")]
     public int health;

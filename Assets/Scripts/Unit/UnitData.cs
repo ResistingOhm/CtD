@@ -1,36 +1,19 @@
 using UnityEngine;
+[System.Serializable]
 
-public enum UnitGroup
-{
-    None,
-    Royal,
-    Forest,
-    Undead,
-    Hero,
-}
-public enum UnitType
-{
-    Knight,
-    Warrior,
-    Archer,
-    Magician,
-}
-
-[CreateAssetMenu(fileName = "EnemyData", menuName = "Scriptable Objects/EnemyData")]
-public class UnitData : ScriptableObject
+public class UnitData
 {
     [Header("-Basic")]
-    public UnitGroup unitGroup;
-    public UnitType unitType;
     public string unitName;
+    public int unitID;
+    public int[] unitSynergy;
     public int unitCost;
-    public Sprite unitSprite;
 
     [Header("-Main Status")] //Increase when Level Up
     public int baseHealth;
     public int baseAttack;
     public int baseDefense;
-    public int baseAttackSpeed;
+    public float baseAttackSpeed;
 
     [Header("-Minor Status")] //Don't increase when Level Up
     public int baseHealthRegen;

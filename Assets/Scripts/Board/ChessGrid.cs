@@ -31,18 +31,6 @@ public class ChessGrid : MonoBehaviour
         costMask = LayerMask.GetMask("Unit", "Obstacle");
     }
 
-    void FixedUpdate()
-    {
-        Collider2D costObject = Physics2D.OverlapBox(this.transform.position, Vector2.one * 0.5f, 0f, costMask);
-        if (costObject == null)
-        {
-            cost = 1;
-            return;
-        }
-
-        cost = byte.MaxValue;
-    }
-
     public void SetNeighbor(ChessGrid g, bool tag)
     {
         switch (tag)

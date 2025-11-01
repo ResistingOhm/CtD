@@ -6,8 +6,10 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private UnitData unitData;
     [Range(0, 2)]
-    private int level;
-    private ItemData[] itemData = new ItemData[3];
+    private int level = 0;
+    private Item[] items = new Item[3];
+    private UnitDeck deck;
+
 
     [HideInInspector]
     public ChessGrid currentPos;
@@ -21,7 +23,7 @@ public class Unit : MonoBehaviour
     private int unitCurrentHealth;
     private int unitAttack;
     private int unitDefense;
-    private int unitAttackSpeed;
+    private float unitAttackSpeed;
 
     [Header("-Minor Status")] //Don't increase when Level Up
     private int unitHealthRegen;
@@ -39,11 +41,16 @@ public class Unit : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        idleState = new IdleState(this);
+        attackingState = new AttackingState(this);
+        movingState = new MovingState(this);
+        deadState = new DeadState(this);
     }
 
     void Start()
     {
         currentState = idleState;
+        SetUnitData(DataManager.unitData[0]);
         RefreshStatus();
     }
 
@@ -52,37 +59,62 @@ public class Unit : MonoBehaviour
         currentState.Update();
     }
 
-    public int GetAttackSpeed()
+    public void SetUnitData(UnitData u)
+    {
+        unitData = u;
+
+    }
+
+    public void SetDeck(UnitDeck u)
+    {
+        deck = u;
+    }
+
+    public float GetAttackSpeed()
     {
         return unitAttackSpeed;
     }
 
-    public UnitGroup GetUnitGroup()
+    public int[] GetUnitSynergy()
     {
-        return unitData.unitGroup;
-    }
-    public UnitType GetUnitType()
-    {
-        return unitData.unitType;
+        return unitData.unitSynergy;
     }
 
     private void RefreshStatus()
     {
+        //Apply Basic status
         unitMaxHealth = (int) (unitData.baseHealth * unitData.healthRate[level]);
         unitAttack = (int) (unitData.baseAttack * unitData.attackRate[level]);
         unitDefense = (int) (unitData.baseDefense * unitData.defenseRate[level]);
-        unitAttackSpeed = (int) (unitData.baseAttackSpeed * unitData.attackSpeedRate[level]);
+        unitAttackSpeed = unitData.baseAttackSpeed * unitData.attackSpeedRate[level];
 
         unitHealthRegen = unitData.baseHealthRegen;
         unitLifeSteal = unitData.baseLifeSteal;
         unitEvade = unitData.baseEvade;
         unitRange = unitData.baseRange;
 
-        //Apply Group
-        //Apply Type
-
-        foreach(ItemData item in itemData)
+        //Apply Synergy
+        int[] s = GetUnitSynergy();
+        for (int i = 0; i < s.Length; i++)
         {
+            int sl = deck.unitSynergy[s[i]][1];
+
+            unitMaxHealth += DataManager.unitSynergyData[s[i]].health[sl];
+            unitAttack += DataManager.unitSynergyData[s[i]].attack[sl];
+            unitDefense += DataManager.unitSynergyData[s[i]].defense[sl];
+            unitAttackSpeed += DataManager.unitSynergyData[s[i]].attackSpeed[sl];
+
+            unitHealthRegen += DataManager.unitSynergyData[s[i]].healthRegen[sl];
+            unitLifeSteal += DataManager.unitSynergyData[s[i]].lifeSteal[sl];
+            unitEvade += DataManager.unitSynergyData[s[i]].evade[sl];
+            unitRange += DataManager.unitSynergyData[s[i]].range[sl];
+        }
+
+        //Apply Item
+        for(int i = 0; i < 3; i++)
+        {
+            if (items[i] == null) break;
+            ItemData item = items[i].itemData;
             unitMaxHealth += item.health;
             unitAttack += item.attack;
             unitDefense += item.defense;
@@ -106,6 +138,7 @@ public class Unit : MonoBehaviour
 
 
     }
+
     public void GetDamage(int damage)
     {
         int i = damage - damage * unitDefense / 100;

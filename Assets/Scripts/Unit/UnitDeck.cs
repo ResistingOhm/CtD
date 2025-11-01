@@ -6,27 +6,59 @@ using static System.Net.WebRequestMethods;
 
 public class UnitDeck : MonoBehaviour
 {
+    public int deckLevel = 1;
+
     public List<Unit> units = new List<Unit>();
-    public Dictionary<UnitGroup, int> groupSynergy = new Dictionary<UnitGroup, int>();
-    public Dictionary<UnitType, int> typeSynergy = new Dictionary<UnitType, int>();
+
+    //Key, Number, Level
+    public Dictionary<int, int[]> unitSynergy = new Dictionary<int, int[]>();
 
     void Start()
     {
-        for (int i = 0; i < System.Enum.GetValues(typeof(UnitGroup)).Length - 1; i++)
+        for (int i = 0; i < DataManager.unitSynergyData.Count - 1; i++)
         {
-            groupSynergy.Add((UnitGroup)i, 0);
+            unitSynergy.Add(i, new int[2] {0,0});
         }
+    }
 
-        for (int i = 0; i < System.Enum.GetValues(typeof(UnitType)).Length - 1; i++)
-        {
-            typeSynergy.Add((UnitType)i, 0);
-        }
+    public bool IsAbleToAddUnit()
+    {
+        return units.Count < deckLevel;
     }
 
     public void AddUnit(Unit u)
     {
         units.Add(u);
-        groupSynergy[u.GetUnitGroup()] += 1;
-        typeSynergy[u.GetUnitType()] += 1;
+        var a = u.GetUnitSynergy();
+        foreach (var v in a)
+        {
+            unitSynergy[v][0] += 1;
+            for (int i = DataManager.unitSynergyData[v].requiredCounts.Length - 1; i >= 0; i--)
+            {
+                if (unitSynergy[v][0] >= DataManager.unitSynergyData[v].requiredCounts[i])
+                {
+                    unitSynergy[v][1] = i+1;
+                    break;
+                }
+            }
+        }
+    }
+
+    public void RemoveUnit(Unit u)
+    {
+        units.Remove(u);
+        var a = u.GetUnitSynergy();
+        foreach (var v in a)
+        {
+            unitSynergy[v][0] -= 1;
+            for (int i = DataManager.unitSynergyData[v].requiredCounts.Length - 1; i >= 0; i--)
+            {
+                if (unitSynergy[v][0] >= DataManager.unitSynergyData[v].requiredCounts[i])
+                {
+                    unitSynergy[v][1] = i + 1;
+                    break;
+                }
+            }
+        }
     }
 }

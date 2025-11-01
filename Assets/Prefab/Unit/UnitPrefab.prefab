@@ -175,3 +175,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0abc671140edbdf459b075d16fb89430, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitData:
+    unitName: 
+    unitID: 0
+    unitSynergy: 
+    unitCost: 0
+    baseHealth: 0
+    baseAttack: 0
+    baseDefense: 0
+    baseAttackSpeed: 0
+    baseHealthRegen: 0
+    baseLifeSteal: 0
+    baseEvade: 0
+    baseRange: 0
+    healthRate:
+    - 0
+    - 0
+    - 0
+    attackRate:
+    - 0
+    - 0
+    - 0
+    defenseRate:
+    - 0
+    - 0
+    - 0
+    attackSpeedRate:
+    - 0
+    - 0
+    - 0
+  currentPos: {fileID: 0}
+  target: {fileID: 0}
