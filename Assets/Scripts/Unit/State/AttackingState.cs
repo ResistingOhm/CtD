@@ -22,7 +22,7 @@ public class AttackingState : IUnitState
 
     public void Update()
     {
-        //give target damage per attack speed
+        currentTime += 0.1f;
 
         if (unit.target == null || !unit.IsTargetInRange())
         {
@@ -30,13 +30,18 @@ public class AttackingState : IUnitState
             return;
         }
 
-        if (currentTime > unit.GetAttackSpeed())
+        if (unit.target.unitCurrentHealth <= 0)
         {
-            currentTime = 0f;
-            //Attack
+            unit.SetTarget();
+            return;
         }
 
-        currentTime += Time.deltaTime;
+        if (currentTime > 1 / unit.GetAttackSpeed())
+        {
+            currentTime = 0f;
+            var dealt = unit.target.GetDamage(unit.GetAttack());
+            unit.GainHealth(dealt * unit.GetLifeSteal() / 100);
+        }
     }
 
     public void Exit()

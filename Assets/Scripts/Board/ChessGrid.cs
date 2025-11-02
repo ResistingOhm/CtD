@@ -76,7 +76,7 @@ public class ChessGrid : MonoBehaviour
     {
         Vector2Int dirVec = grid.gridIndex - gridIndex;
 
-        return Mathf.Abs(dirVec.x + dirVec.y);
+        return Mathf.Abs(dirVec.x) + Mathf.Abs(dirVec.y);
     }
 }
 

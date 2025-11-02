@@ -16,16 +16,15 @@ public class DeadState: IUnitState
     public void Enter()
     {
         //Set Animation or Sprite to Dead
-        //Disable All Collider in unit (Character Collider + waypointCollider)
-        //Velocity to zero
+        unit.SetVelocity(0);
         deadTime = 0f;
     }
 
     public void Update()
     {
-        deadTime += Time.deltaTime;
+        deadTime += 0.1f;
 
-        if (deadTime > 0.7f)
+        if (deadTime > 0.2f)
         {
             unit.gameObject.SetActive(false);
         }

@@ -18,17 +18,17 @@ public class Unit : MonoBehaviour
     private Rigidbody2D rb;
 
     [Header("-Main Status")] //Increase when Level Up
-    private int unitMaxHealth;
-    private int unitCurrentHealth;
-    private int unitAttack;
-    private int unitDefense;
-    private float unitAttackSpeed;
+    public int unitMaxHealth;
+    public int unitCurrentHealth;
+    public int unitAttack;
+    public int unitDefense;
+    public float unitAttackSpeed;
 
     [Header("-Minor Status")] //Don't increase when Level Up
-    private int unitHealthRegen;
-    private int unitLifeSteal;
-    private int unitEvade;
-    private int unitRange;
+    public int unitHealthRegen;
+    public int unitLifeSteal;
+    public int unitEvade;
+    public int unitRange;
 
     [Header("-State")]
     private IUnitState currentState;
@@ -77,7 +77,6 @@ public class Unit : MonoBehaviour
         WaitForSeconds w = new WaitForSeconds(0.1f);
         while(GameManager.Instance.isRunning)
         {
-            Debug.Log(currentState);
             currentState.Update();
             yield return w;
         }
@@ -91,6 +90,16 @@ public class Unit : MonoBehaviour
     public float GetAttackSpeed()
     {
         return unitAttackSpeed;
+    }
+
+    public int GetAttack()
+    {
+        return unitAttack;
+    }
+
+    public int GetLifeSteal()
+    {
+        return unitLifeSteal;
     }
 
     public int[] GetUnitSynergy()
@@ -117,7 +126,9 @@ public class Unit : MonoBehaviour
             int[] s = GetUnitSynergy();
             for (int i = 0; i < s.Length; i++)
             {
-                int sl = deck.unitSynergy[s[i]][1];
+                int sl = deck.unitSynergy[s[i]][1] - 1;
+
+                if (sl < 0) continue;
 
                 unitMaxHealth += DataManager.unitSynergyData[s[i]].health[sl];
                 unitAttack += DataManager.unitSynergyData[s[i]].attack[sl];
@@ -146,6 +157,8 @@ public class Unit : MonoBehaviour
             unitEvade += item.evade;
             unitRange += item.range;
         }
+
+        unitCurrentHealth = unitMaxHealth;
     }
 
     public void SetVelocity(float p)
@@ -164,6 +177,7 @@ public class Unit : MonoBehaviour
 
         foreach(var e in enemy)
         {
+            if (e.unitCurrentHealth <= 0) continue;
             var n = e.currentPos.GetDistance(currentPos);
             if (n < min)
             {
@@ -173,11 +187,19 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void GetDamage(int damage)
+    public int GetDamage(int damage)
     {
         int i = damage - damage * unitDefense / 100;
         if (i > 0) unitCurrentHealth -= i;
         if (unitCurrentHealth <= 0) SetState(deadState);
+
+        return i;
+    }
+
+    public void GainHealth(int n)
+    {
+        unitCurrentHealth += n;
+        if (unitCurrentHealth > unitMaxHealth) unitCurrentHealth = unitMaxHealth;
     }
 
     private void AddItem(Item i)
@@ -196,7 +218,7 @@ public class Unit : MonoBehaviour
 
     public bool IsTargetInRange()
     {
-        return target.currentPos.GetDistance(currentPos) < unitRange;
+        return target.currentPos.GetDistance(currentPos) <= unitRange;
     }
 
     public ChessGrid FindNextGrid()
@@ -223,6 +245,7 @@ public class Unit : MonoBehaviour
                 isDeck = true;
                 GameManager.Instance.startFight += StartFighting;
                 GameManager.Instance.endFight += EndFighting;
+                RefreshStatus();
             }
         } else
         {
@@ -233,6 +256,7 @@ public class Unit : MonoBehaviour
                 isDeck = false;
                 GameManager.Instance.startFight -= StartFighting;
                 GameManager.Instance.endFight -= EndFighting;
+                RefreshStatus();
             }
         }
     }

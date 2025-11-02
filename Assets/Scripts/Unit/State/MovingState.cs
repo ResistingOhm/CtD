@@ -16,13 +16,12 @@ public class MovingState : IUnitState
     public void Enter()
     {
         //Set Animation or Sprite to Move
-        unit.SetVelocity(2f);
+        unit.SetVelocity(2.5f);
     }
 
     public void Update()
     {
-        //If unit arrive at way point
-        //unit.SetState(unit.idleState);
+        if (Vector2.Distance(unit.transform.position, unit.currentPos.transform.position) < 0.1f) unit.SetState(unit.idleState);
     }
 
     public void Exit()

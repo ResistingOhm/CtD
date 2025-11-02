@@ -174,14 +174,4 @@ public class ChessBoard : MonoBehaviour
         }
         return curGrid;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //To Test PathFinding
-        if (Input.GetMouseButtonDown(0))
-        {
-            PathFinding(board[0, 0], board[5, 7], true);
-        }
-    }
 }

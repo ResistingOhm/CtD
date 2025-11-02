@@ -37,6 +37,14 @@ public class GameManager : MonoBehaviour
         j.GetComponent<Unit>().currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-6, 3));
         j.transform.position = j.GetComponent<Unit>().currentPos.transform.position;
 
+        var k = ObjectPoolManager.Instance.SpawnFromPool("Unit", Vector3.zero, Quaternion.identity);
+        k.tag = "Enemy";
+        k.GetComponent<Unit>().SetDeck(enemyDeck);
+        k.GetComponent<Unit>().SetUnitData(DataManager.unitData[1]);
+        enemyDeck.AddUnit(k.GetComponent<Unit>());
+        k.GetComponent<Unit>().currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1));
+        k.transform.position = k.GetComponent<Unit>().currentPos.transform.position;
+
     }
 
     public void StartFight()
