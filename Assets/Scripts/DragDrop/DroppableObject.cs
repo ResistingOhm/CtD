@@ -6,7 +6,7 @@ public class DroppableObject : MonoBehaviour, IDropHandler
     [SerializeField]
     private string acceptableTag;
 
-    private bool canAccept = true;
+    public bool canAccept = true;
 
     public void SetTag(string tag)
     {
@@ -15,7 +15,7 @@ public class DroppableObject : MonoBehaviour, IDropHandler
 
     public bool CanAccept(string tag)
     {
-        return true;
+        return tag.Equals(tag) && canAccept;
     }
 
     public void OnDrop(PointerEventData eventData)

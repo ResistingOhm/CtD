@@ -22,7 +22,7 @@ public class MovingState : IUnitState
     public void Update()
     {
         //If unit arrive at way point
-        unit.SetState(unit.idleState);
+        //unit.SetState(unit.idleState);
     }
 
     public void Exit()

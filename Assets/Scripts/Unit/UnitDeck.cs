@@ -32,7 +32,9 @@ public class UnitDeck : MonoBehaviour
         var a = u.GetUnitSynergy();
         foreach (var v in a)
         {
+            if (!unitSynergy.ContainsKey(v)) unitSynergy.Add(v, new int[2] { 0, 0 });
             unitSynergy[v][0] += 1;
+            Debug.Log(unitSynergy[v][0]);
             for (int i = DataManager.unitSynergyData[v].requiredCounts.Length - 1; i >= 0; i--)
             {
                 if (unitSynergy[v][0] >= DataManager.unitSynergyData[v].requiredCounts[i])
@@ -41,6 +43,11 @@ public class UnitDeck : MonoBehaviour
                     break;
                 }
             }
+        }
+
+        foreach (var v in units)
+        {
+            v.RefreshStatus();
         }
     }
 
@@ -59,6 +66,11 @@ public class UnitDeck : MonoBehaviour
                     break;
                 }
             }
+        }
+
+        foreach (var v in units)
+        {
+            v.RefreshStatus();
         }
     }
 }

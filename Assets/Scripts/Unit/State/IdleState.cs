@@ -25,7 +25,7 @@ public class IdleState : IUnitState
     {
         if (unit.target == null)
         {
-            //Find target
+            unit.SetTarget();
             return;
         }
 

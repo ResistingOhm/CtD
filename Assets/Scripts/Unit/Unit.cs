@@ -2,9 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Unit : MonoBehaviour, IDropHandler
+public class Unit : MonoBehaviour
 {
-    [SerializeField]
     private UnitData unitData;
     [Range(0, 2)]
     private int level = 0;
@@ -13,9 +12,7 @@ public class Unit : MonoBehaviour, IDropHandler
     private bool isDeck = false;
 
 
-    [HideInInspector]
     public ChessGrid currentPos;
-    [HideInInspector]
     public Unit target;
 
     private Rigidbody2D rb;
@@ -51,10 +48,8 @@ public class Unit : MonoBehaviour, IDropHandler
 
     void Start()
     {
-        GameManager.Instance.startFight += StartFighting;
-        GameManager.Instance.endFight += EndFighting;
         GetComponent<DraggableObject>().dropAction += AfterDrop;
-        SetState(idleState);
+        currentState = idleState;
         RefreshStatus();
     }
 
@@ -79,9 +74,10 @@ public class Unit : MonoBehaviour, IDropHandler
 
     IEnumerator DoAction()
     {
-        WaitForSeconds w = new WaitForSeconds(0.5f);
+        WaitForSeconds w = new WaitForSeconds(0.1f);
         while(GameManager.Instance.isRunning)
         {
+            Debug.Log(currentState);
             currentState.Update();
             yield return w;
         }
@@ -102,7 +98,7 @@ public class Unit : MonoBehaviour, IDropHandler
         return unitData.unitSynergy;
     }
 
-    private void RefreshStatus()
+    public void RefreshStatus()
     {
         //Apply Basic status
         unitMaxHealth = (int) (unitData.baseHealth * unitData.healthRate[level]);
@@ -116,20 +112,23 @@ public class Unit : MonoBehaviour, IDropHandler
         unitRange = unitData.baseRange;
 
         //Apply Synergy
-        int[] s = GetUnitSynergy();
-        for (int i = 0; i < s.Length; i++)
+        if (isDeck)
         {
-            int sl = deck.unitSynergy[s[i]][1];
+            int[] s = GetUnitSynergy();
+            for (int i = 0; i < s.Length; i++)
+            {
+                int sl = deck.unitSynergy[s[i]][1];
 
-            unitMaxHealth += DataManager.unitSynergyData[s[i]].health[sl];
-            unitAttack += DataManager.unitSynergyData[s[i]].attack[sl];
-            unitDefense += DataManager.unitSynergyData[s[i]].defense[sl];
-            unitAttackSpeed += DataManager.unitSynergyData[s[i]].attackSpeed[sl];
+                unitMaxHealth += DataManager.unitSynergyData[s[i]].health[sl];
+                unitAttack += DataManager.unitSynergyData[s[i]].attack[sl];
+                unitDefense += DataManager.unitSynergyData[s[i]].defense[sl];
+                unitAttackSpeed += DataManager.unitSynergyData[s[i]].attackSpeed[sl];
 
-            unitHealthRegen += DataManager.unitSynergyData[s[i]].healthRegen[sl];
-            unitLifeSteal += DataManager.unitSynergyData[s[i]].lifeSteal[sl];
-            unitEvade += DataManager.unitSynergyData[s[i]].evade[sl];
-            unitRange += DataManager.unitSynergyData[s[i]].range[sl];
+                unitHealthRegen += DataManager.unitSynergyData[s[i]].healthRegen[sl];
+                unitLifeSteal += DataManager.unitSynergyData[s[i]].lifeSteal[sl];
+                unitEvade += DataManager.unitSynergyData[s[i]].evade[sl];
+                unitRange += DataManager.unitSynergyData[s[i]].range[sl];
+            }
         }
 
         //Apply Item
@@ -157,8 +156,21 @@ public class Unit : MonoBehaviour, IDropHandler
 
     public void SetTarget()
     {
+        System.Collections.Generic.List<Unit> enemy;
+        if (this.CompareTag("Ally")) enemy = GameManager.Instance.enemyDeck.units;
+        else enemy = GameManager.Instance.playerDeck.units;
 
+        int min = 255;
 
+        foreach(var e in enemy)
+        {
+            var n = e.currentPos.GetDistance(currentPos);
+            if (n < min)
+            {
+                min = n;
+                target = e;
+            }
+        }
     }
 
     public void GetDamage(int damage)
@@ -172,9 +184,14 @@ public class Unit : MonoBehaviour, IDropHandler
     {
         for (int j = 0; j < 3; j++)
         {
-            if (items[j] == null) items[j] = i;
-            break;
+            if (items[j] == null)
+            {
+                items[j] = i;
+                break;
+            }
         }
+
+        if (items[2] == null) this.GetComponent<DroppableObject>().canAccept = false;
     }
 
     public bool IsTargetInRange()
@@ -197,6 +214,26 @@ public class Unit : MonoBehaviour, IDropHandler
     public void AfterDrop(GameObject g)
     {
         this.transform.position = g.transform.position;
-        if (!isDeck) deck.AddUnit(this);
+        if (g.CompareTag("Board"))
+        {
+            currentPos = g.GetComponent<ChessGrid>();
+            if (!isDeck)
+            {
+                deck.AddUnit(this);
+                isDeck = true;
+                GameManager.Instance.startFight += StartFighting;
+                GameManager.Instance.endFight += EndFighting;
+            }
+        } else
+        {
+            currentPos = null;
+            if (isDeck)
+            {
+                deck.RemoveUnit(this);
+                isDeck = false;
+                GameManager.Instance.startFight -= StartFighting;
+                GameManager.Instance.endFight -= EndFighting;
+            }
+        }
     }
 }
