@@ -28,7 +28,7 @@ public class ObjectPoolManager : MonoBehaviour
         };
     }
 
-    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
+    public T SpawnFromPool<T>(string tag, Vector3 position, Quaternion rotation) where T: MonoBehaviour
     {
         if (!poolDictionary.ContainsKey(tag))
         {
@@ -42,10 +42,10 @@ public class ObjectPoolManager : MonoBehaviour
         objectToSpawn.transform.position = position;
         objectToSpawn.transform.rotation = rotation;
 
-        return objectToSpawn;
+        return objectToSpawn.GetComponent<T>();
     }
 
-    public GameObject[] SpawnsFromPool(string tag, Vector3 position, Quaternion rotation, int num)
+    public T[] SpawnsFromPool<T>(string tag, Vector3 position, Quaternion rotation, int num) where T: MonoBehaviour
     {
         if (!poolDictionary.ContainsKey(tag))
         {
@@ -54,15 +54,17 @@ public class ObjectPoolManager : MonoBehaviour
         }
 
         GameObject[] objectToSpawn = new GameObject[num];
+        T[] componentToSpawn = new T[num];
         for (int i = 0; i < num; i++)
         {
             objectToSpawn[i] = poolDictionary[tag].SpawnObject();
             objectToSpawn[i].SetActive(true);
             objectToSpawn[i].transform.position = position;
             objectToSpawn[i].transform.rotation = rotation;
+            componentToSpawn[i] = objectToSpawn[i].GetComponent<T>();
         }
 
-        return objectToSpawn;
+        return componentToSpawn;
     }
 
 

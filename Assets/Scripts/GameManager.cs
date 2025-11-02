@@ -21,29 +21,29 @@ public class GameManager : MonoBehaviour
 
     public void Spawn()
     {
-        var g = ObjectPoolManager.Instance.SpawnsFromPool("Unit", Vector3.zero, Quaternion.identity, 5);
+        var g = ObjectPoolManager.Instance.SpawnsFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity, 5);
         foreach (var p in g)
         {
             p.tag = "Ally";
-            p.GetComponent<Unit>().SetDeck(playerDeck);
-            p.GetComponent<Unit>().SetUnitData(DataManager.unitData[0]);
+            p.SetDeck(playerDeck);
+            p.SetUnitData(DataManager.unitData[0]);
         }
 
-        var j = ObjectPoolManager.Instance.SpawnFromPool("Unit", Vector3.zero, Quaternion.identity);
+        var j = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
         j.tag = "Enemy";
-        j.GetComponent<Unit>().SetDeck(enemyDeck);
-        j.GetComponent<Unit>().SetUnitData(DataManager.unitData[1]);
-        enemyDeck.AddUnit(j.GetComponent<Unit>());
-        j.GetComponent<Unit>().currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-6, 3));
-        j.transform.position = j.GetComponent<Unit>().currentPos.transform.position;
+        j.SetDeck(enemyDeck);
+        j.SetUnitData(DataManager.unitData[1]);
+        enemyDeck.AddUnit(j);
+        j.currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-6, 3));
+        j.transform.position = j.currentPos.transform.position;
 
-        var k = ObjectPoolManager.Instance.SpawnFromPool("Unit", Vector3.zero, Quaternion.identity);
+        var k = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
         k.tag = "Enemy";
-        k.GetComponent<Unit>().SetDeck(enemyDeck);
-        k.GetComponent<Unit>().SetUnitData(DataManager.unitData[1]);
-        enemyDeck.AddUnit(k.GetComponent<Unit>());
-        k.GetComponent<Unit>().currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1));
-        k.transform.position = k.GetComponent<Unit>().currentPos.transform.position;
+        k.SetDeck(enemyDeck);
+        k.SetUnitData(DataManager.unitData[1]);
+        enemyDeck.AddUnit(k);
+        k.currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1));
+        k.transform.position = k.currentPos.transform.position;
 
     }
 

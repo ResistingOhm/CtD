@@ -11,24 +11,24 @@ public class Unit : MonoBehaviour
     private UnitDeck deck;
     private bool isDeck = false;
 
-
     public ChessGrid currentPos;
     public Unit target;
 
     private Rigidbody2D rb;
+    private DraggableObject draggableObject;
 
     [Header("-Main Status")] //Increase when Level Up
-    public int unitMaxHealth;
-    public int unitCurrentHealth;
-    public int unitAttack;
-    public int unitDefense;
-    public float unitAttackSpeed;
+    private int unitMaxHealth;
+    private int unitCurrentHealth;
+    private int unitAttack;
+    private int unitDefense;
+    private float unitAttackSpeed;
 
     [Header("-Minor Status")] //Don't increase when Level Up
-    public int unitHealthRegen;
-    public int unitLifeSteal;
-    public int unitEvade;
-    public int unitRange;
+    private int unitHealthRegen;
+    private int unitLifeSteal;
+    private int unitEvade;
+    private int unitRange;
 
     [Header("-State")]
     private IUnitState currentState;
@@ -48,7 +48,8 @@ public class Unit : MonoBehaviour
 
     void Start()
     {
-        GetComponent<DraggableObject>().dropAction += AfterDrop;
+        draggableObject = GetComponent<DraggableObject>();
+        draggableObject.dropAction += AfterDrop;
         currentState = idleState;
         RefreshStatus();
     }
@@ -61,13 +62,13 @@ public class Unit : MonoBehaviour
 
     public void StartFighting()
     {
-        this.GetComponent<DraggableObject>().enabled = false;
+        draggableObject.enabled = false;
         StartCoroutine(DoAction());
     }
 
     public void EndFighting()
     {
-        this.GetComponent<DraggableObject>().enabled = true;
+        draggableObject.enabled = true;
         SetState(idleState);
         RefreshStatus();
     }

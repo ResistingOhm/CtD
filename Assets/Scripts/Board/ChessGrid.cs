@@ -12,8 +12,6 @@ public class ChessGrid : MonoBehaviour
     private List<ChessGrid> neighborGrid = new List<ChessGrid>();
     private List<ChessGrid> neighborDiagonalGrid = new List<ChessGrid>();
 
-    private int costMask;
-
     public Vector2Int gridIndex;
 
     public byte cost = 1;
@@ -23,13 +21,6 @@ public class ChessGrid : MonoBehaviour
     public int gCost = 0;
 
     public ChessGrid parentGrid;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        costMask = LayerMask.GetMask("Unit", "Obstacle");
-    }
 
     public void SetNeighbor(ChessGrid g, bool tag)
     {
