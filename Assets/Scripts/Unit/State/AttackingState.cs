@@ -24,15 +24,21 @@ public class AttackingState : IUnitState
     {
         currentTime += 0.1f;
 
-        if (unit.target == null || !unit.IsTargetInRange())
+        if (unit.target == null)
         {
             unit.SetState(unit.idleState);
             return;
         }
 
-        if (unit.target.unitCurrentHealth <= 0)
+        if (unit.target.GetCurrentHealth() <= 0)
         {
             unit.SetTarget();
+            return;
+        }
+
+        if (!unit.IsTargetInRange())
+        {
+            unit.SetState(unit.idleState);
             return;
         }
 

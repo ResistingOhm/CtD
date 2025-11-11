@@ -15,7 +15,7 @@ public class DroppableObject : MonoBehaviour, IDropHandler
 
     public bool CanAccept(string tag)
     {
-        return tag.Equals(tag) && canAccept;
+        return acceptableTag.Equals(tag) && canAccept;
     }
 
     public void OnDrop(PointerEventData eventData)

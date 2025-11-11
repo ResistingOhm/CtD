@@ -29,6 +29,12 @@ public class IdleState : IUnitState
             return;
         }
 
+        if (unit.target.GetCurrentHealth() <= 0)
+        {
+            unit.SetTarget();
+            return;
+        }
+
         if (unit.IsTargetInRange())
         {
             unit.SetState(unit.attackingState);
@@ -45,7 +51,6 @@ public class IdleState : IUnitState
             unit.SetState(unit.movingState);
             return;
         }
-
     }
 
     public void Exit()

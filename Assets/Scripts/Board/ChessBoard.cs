@@ -143,11 +143,14 @@ public class ChessBoard : MonoBehaviour
 
             foreach (ChessGrid grid in curGrid.GetNeighbor(tag))
             {
-                if (grid.cost == byte.MaxValue) continue;
+                if (grid.cost == byte.MaxValue)
+                {
+                    if (grid == endGrid) return FindNextGrid(startGrid, curGrid);
+                    else continue;
+                }
                 if (closedList.Contains(grid)) continue;
 
-                Vector2Int dirVec = grid.gridIndex - endGrid.gridIndex;
-                int distance = dirVec.x + dirVec.y;
+                int distance = grid.GetDistance(endGrid);
                 int tempg = curGrid.gCost + grid.cost;
 
                 if (tempg < grid.gCost || !openList.Contains(grid))

@@ -17,6 +17,8 @@ public class DeadState: IUnitState
     {
         //Set Animation or Sprite to Dead
         unit.SetVelocity(0);
+        unit.currentPos.cost = 1;
+        unit.currentPos = null;
         deadTime = 0f;
     }
 

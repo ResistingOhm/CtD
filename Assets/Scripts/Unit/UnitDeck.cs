@@ -57,7 +57,10 @@ public class UnitDeck : MonoBehaviour
         foreach (var v in a)
         {
             unitSynergy[v][0] -= 1;
-            if (unitSynergy[v][0] < 0) unitSynergy[v][0] = 0;
+            if (unitSynergy[v][0] < 0)
+            {
+                unitSynergy[v][0] = 0;
+            }
             else
             {
                 for (int i = DataManager.unitSynergyData[v].requiredCounts.Length - 1; i >= 0; i--)
@@ -67,6 +70,8 @@ public class UnitDeck : MonoBehaviour
                         unitSynergy[v][1] = i + 1;
                         break;
                     }
+
+                    unitSynergy[v][1] = 0;
                 }
             }
         }

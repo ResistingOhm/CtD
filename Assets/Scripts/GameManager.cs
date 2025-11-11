@@ -1,4 +1,7 @@
+using NUnit.Framework;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -10,8 +13,7 @@ public class GameManager : MonoBehaviour
     public UnitDeck playerDeck;
     public UnitDeck enemyDeck;
 
-    public event Action startFight;
-    public event Action endFight;
+    public List<Unit> tempUnitPool = new List<Unit>();
 
     void Awake()
     {
@@ -21,39 +23,61 @@ public class GameManager : MonoBehaviour
 
     public void Spawn()
     {
-        var g = ObjectPoolManager.Instance.SpawnsFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity, 5);
+        var g = ObjectPoolManager.Instance.SpawnsFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity, 16);
         foreach (var p in g)
         {
             p.tag = "Ally";
-            p.SetDeck(playerDeck);
-            p.SetUnitData(DataManager.unitData[0]);
+            p.InitialSetting(DataManager.unitData[0], playerDeck);
         }
 
         var j = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
         j.tag = "Enemy";
-        j.SetDeck(enemyDeck);
-        j.SetUnitData(DataManager.unitData[1]);
+        j.InitialSetting(DataManager.unitData[1], enemyDeck);
         enemyDeck.AddUnit(j);
         j.currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-6, 3));
         j.transform.position = j.currentPos.transform.position;
-
+        /*
         var k = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
         k.tag = "Enemy";
-        k.SetDeck(enemyDeck);
-        k.SetUnitData(DataManager.unitData[1]);
+        k.InitialSetting(DataManager.unitData[1], enemyDeck);
         enemyDeck.AddUnit(k);
         k.currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1));
         k.transform.position = k.currentPos.transform.position;
-
+        */
     }
 
     public void StartFight()
     {
-        startFight?.Invoke();
+        tempUnitPool.AddRange(playerDeck.units);
+        tempUnitPool.AddRange(enemyDeck.units);
+
+        foreach (var unit in tempUnitPool)
+        {
+            unit.StartFighting();
+        }
+
+        StartCoroutine(DoFightAction());
     }
 
     public void EndFight()
     {
-        endFight?.Invoke();
+        foreach (var unit in tempUnitPool)
+        {
+            unit.EndFighting();
+        }
+        tempUnitPool.Clear();
+    }
+
+    IEnumerator DoFightAction()
+    {
+        WaitForSeconds w = new WaitForSeconds(0.1f);
+        while (isRunning)
+        {
+            foreach (var unit in tempUnitPool)
+            {
+                unit.DoAction();
+            }
+            yield return w;
+        }
     }
 }
