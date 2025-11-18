@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 1209169694237315298}
   m_Layer: 7
   m_Name: InventoryGrid
-  m_TagString: Untagged
+  m_TagString: Inventory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -283,3 +283,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceptableTag: 
   canAccept: 1
+  canChange: 1

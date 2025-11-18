@@ -16,6 +16,7 @@ public class Unit : MonoBehaviour
     public Unit target;
 
     private Rigidbody2D rb;
+    [SerializeField]
     private DraggableObject draggableObject;
 
     [Header("-Status")]
@@ -35,12 +36,10 @@ public class Unit : MonoBehaviour
         attackingState = new AttackingState(this);
         movingState = new MovingState(this);
         deadState = new DeadState(this);
-    }
 
-    void Start()
-    {
         draggableObject = GetComponent<DraggableObject>();
         draggableObject.dropAction += AfterDrop;
+        draggableObject.changeAction += AfterChange;
     }
 
      void OnEnable()
@@ -48,10 +47,14 @@ public class Unit : MonoBehaviour
         currentState = idleState;
     }
 
-    public void InitialSetting(UnitData u, UnitDeck d)
+    public void InitialSetting(UnitData u, UnitDeck d, bool isAlly)
     {
         unitData = u;
         deck = d;
+
+        gameObject.tag = isAlly ? "Ally" : "Enemy";
+        draggableObject.enabled = isAlly;
+
 
         status = new UnitTotalStatus();
         status.synergy = new Status[GetUnitSynergy().Length];
@@ -170,7 +173,7 @@ public class Unit : MonoBehaviour
         if (status.unitCurrentHealth > status.maxHealth) status.unitCurrentHealth = status.maxHealth;
     }
 
-    private void AddItem(Item i)
+    private bool AddItem(Item i)
     {
         for (int j = 0; j < 3; j++)
         {
@@ -178,11 +181,14 @@ public class Unit : MonoBehaviour
             {
                 items[j] = i;
                 status.items[j] = Status.Converter(i.itemData);
-                break;
+
+                return true;
             }
         }
 
-        if (items[2] == null) this.GetComponent<DroppableObject>().canAccept = false;
+        if (items[2] != null) { } //Cant accept;
+
+        return false;
     }
 
     public bool IsTargetInRange()
@@ -208,21 +214,39 @@ public class Unit : MonoBehaviour
         if (g.CompareTag("Board"))
         {
             currentPos = g.GetComponent<ChessGrid>();
+            currentPos.NowFilled(draggableObject);
             if (!isDeck)
             {
                 deck.AddUnit(this);
                 isDeck = true;
                 RefreshStatus();
             }
-        } else
+        } else if (g.CompareTag("Inventory"))
         {
-            currentPos = null;
             if (isDeck)
             {
+                currentPos.NowEmpty();
+                currentPos = null;
+
                 deck.RemoveUnit(this);
                 isDeck = false;
                 RefreshStatus();
             }
         }
+    }
+
+    public void AfterChange(GameObject droppable, GameObject previous)
+    {
+        if (isDeck)
+        {
+            GameObject temp = currentPos.gameObject;
+            AfterDrop(droppable);
+            previous.GetComponent<Unit>().AfterDrop(temp);
+        } else
+        {
+            previous.GetComponent<Unit>().AfterDrop(currentPos.gameObject);
+            AfterDrop(droppable);
+        }
+
     }
 }

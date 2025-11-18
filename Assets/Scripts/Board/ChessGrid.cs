@@ -11,6 +11,7 @@ public class ChessGrid : MonoBehaviour
 
     private List<ChessGrid> neighborGrid = new List<ChessGrid>();
     private List<ChessGrid> neighborDiagonalGrid = new List<ChessGrid>();
+    public DroppableTile droppableObject { get; private set; }
 
     public Vector2Int gridIndex;
 
@@ -21,6 +22,11 @@ public class ChessGrid : MonoBehaviour
     public int gCost = 0;
 
     public ChessGrid parentGrid;
+
+    void Start()
+    {
+        droppableObject = GetComponent<DroppableTile>();
+    }
 
     public void SetNeighbor(ChessGrid g, bool tag)
     {
@@ -61,6 +67,28 @@ public class ChessGrid : MonoBehaviour
         fCost = 0;
         gCost = 0;
         parentGrid = null;
+    }
+
+    public void NowFilled(DraggableObject g)
+    {
+        cost = byte.MaxValue;
+        droppableObject.canAccept = false;
+        droppableObject.objectNow = g;
+    }
+
+    public void NowEmpty()
+    {
+        cost = 1;
+        droppableObject.canAccept = true;
+        droppableObject.objectNow = null;
+    }
+
+    public void Refresh()
+    {
+        if (droppableObject.objectNow != null)
+        {
+            cost = byte.MaxValue;
+        }
     }
 
     public int GetDistance(ChessGrid grid)

@@ -41,14 +41,18 @@ public class ChessBoard : MonoBehaviour
                 Vector3 worldPos = new Vector3(boardStartPosition.x + gridDiameter * x + gridRadius,boardStartPosition.y +  gridDiameter * y + gridRadius, 0);
                 GameObject g = Instantiate(chessGrid, worldPos, Quaternion.identity);
                 g.transform.SetParent(this.transform);
-                g.GetComponent<ChessGrid>().SetMainColor(isBlack? Color.black: Color.white);
-                g.GetComponent<ChessGrid>().SetIndex(x, y);
+                var n = g.GetComponent<ChessGrid>();
+                n.SetMainColor(isBlack? Color.black: Color.white);
+                n.SetIndex(x, y);
+                g.AddComponent(typeof(DroppableTile));
                 if (y < boardSize.y / 2)
                 {
-                    g.AddComponent(typeof(DroppableObject));
-                    g.GetComponent<DroppableObject>().SetTag("Ally");
+                    g.GetComponent<DroppableTile>().SetTag("Ally");
+                } else
+                {
+                    g.GetComponent<DroppableTile>().SetTag("Enemy");
                 }
-                board[x, y] = g.GetComponent<ChessGrid>();
+                board[x, y] = n;
                 isBlack = !isBlack;
             }
         }
@@ -176,5 +180,22 @@ public class ChessBoard : MonoBehaviour
             curGrid = curGrid.parentGrid;
         }
         return curGrid;
+    }
+
+    public void StartFighting()
+    {
+        foreach (ChessGrid c in board)
+        {
+            c.gameObject.GetComponent<DroppableTile>().enabled = false;
+        }
+    }
+
+    public void EndFighting()
+    {
+        foreach (ChessGrid c in board)
+        {
+            c.gameObject.GetComponent<DroppableTile>().enabled = true;
+            c.Refresh();
+        }
     }
 }

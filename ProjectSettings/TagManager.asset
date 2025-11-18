@@ -9,6 +9,7 @@ TagManager:
   - Obstacle
   - Ally
   - Item
+  - Inventory
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Unit
   - Obstacle
   - Item
-  - Moving
+  - 
   - 
   - 
   - 

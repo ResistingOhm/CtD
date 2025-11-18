@@ -21,29 +21,24 @@ public class GameManager : MonoBehaviour
         else Destroy(this.gameObject);
     }
 
+    public void TestEnemySpawn()
+    {
+        var j = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
+        j.InitialSetting(DataManager.unitData[1], enemyDeck, false);
+        j.AfterDrop(ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-6, 3)).gameObject);
+        
+        var k = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
+        k.InitialSetting(DataManager.unitData[1], enemyDeck, false);
+        k.AfterDrop(ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1)).gameObject);
+    }
+
     public void Spawn()
     {
         var g = ObjectPoolManager.Instance.SpawnsFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity, 16);
         foreach (var p in g)
         {
-            p.tag = "Ally";
-            p.InitialSetting(DataManager.unitData[0], playerDeck);
+            p.InitialSetting(DataManager.unitData[0], playerDeck, true);
         }
-
-        var j = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
-        j.tag = "Enemy";
-        j.InitialSetting(DataManager.unitData[1], enemyDeck);
-        enemyDeck.AddUnit(j);
-        j.currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-6, 3));
-        j.transform.position = j.currentPos.transform.position;
-        /*
-        var k = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
-        k.tag = "Enemy";
-        k.InitialSetting(DataManager.unitData[1], enemyDeck);
-        enemyDeck.AddUnit(k);
-        k.currentPos = ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1));
-        k.transform.position = k.currentPos.transform.position;
-        */
     }
 
     public void StartFight()
@@ -51,16 +46,24 @@ public class GameManager : MonoBehaviour
         tempUnitPool.AddRange(playerDeck.units);
         tempUnitPool.AddRange(enemyDeck.units);
 
+        ChessBoard.Instance.StartFighting();
+
         foreach (var unit in tempUnitPool)
         {
             unit.StartFighting();
         }
+
+        isRunning = true;
 
         StartCoroutine(DoFightAction());
     }
 
     public void EndFight()
     {
+        isRunning = false;
+
+        ChessBoard.Instance.EndFighting();
+
         foreach (var unit in tempUnitPool)
         {
             unit.EndFighting();
