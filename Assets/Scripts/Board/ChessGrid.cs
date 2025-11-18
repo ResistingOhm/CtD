@@ -72,6 +72,7 @@ public class ChessGrid : MonoBehaviour
     public void NowFilled(DraggableObject g)
     {
         cost = byte.MaxValue;
+        if (droppableObject == null) return;
         droppableObject.canAccept = false;
         droppableObject.objectNow = g;
     }
@@ -79,12 +80,14 @@ public class ChessGrid : MonoBehaviour
     public void NowEmpty()
     {
         cost = 1;
+        if (droppableObject == null) return;
         droppableObject.canAccept = true;
         droppableObject.objectNow = null;
     }
 
     public void Refresh()
     {
+        if (droppableObject == null) return;
         if (droppableObject.objectNow != null)
         {
             cost = byte.MaxValue;

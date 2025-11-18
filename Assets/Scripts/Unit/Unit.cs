@@ -16,7 +16,6 @@ public class Unit : MonoBehaviour
     public Unit target;
 
     private Rigidbody2D rb;
-    [SerializeField]
     private DraggableObject draggableObject;
 
     [Header("-Status")]
@@ -53,7 +52,6 @@ public class Unit : MonoBehaviour
         deck = d;
 
         gameObject.tag = isAlly ? "Ally" : "Enemy";
-        draggableObject.enabled = isAlly;
 
 
         status = new UnitTotalStatus();
@@ -173,7 +171,7 @@ public class Unit : MonoBehaviour
         if (status.unitCurrentHealth > status.maxHealth) status.unitCurrentHealth = status.maxHealth;
     }
 
-    private bool AddItem(Item i)
+    public bool AddItem(Item i)
     {
         for (int j = 0; j < 3; j++)
         {
@@ -185,8 +183,6 @@ public class Unit : MonoBehaviour
                 return true;
             }
         }
-
-        if (items[2] != null) { } //Cant accept;
 
         return false;
     }
@@ -211,6 +207,13 @@ public class Unit : MonoBehaviour
     public void AfterDrop(GameObject g)
     {
         this.transform.position = g.transform.position;
+
+        if (currentPos != null)
+        {
+            currentPos.NowEmpty();
+            currentPos = null;
+        }
+
         if (g.CompareTag("Board"))
         {
             currentPos = g.GetComponent<ChessGrid>();
@@ -225,9 +228,6 @@ public class Unit : MonoBehaviour
         {
             if (isDeck)
             {
-                currentPos.NowEmpty();
-                currentPos = null;
-
                 deck.RemoveUnit(this);
                 isDeck = false;
                 RefreshStatus();
@@ -235,17 +235,16 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void AfterChange(GameObject droppable, GameObject previous)
+    public void AfterChange(GameObject droppedTile, GameObject previousTile)
     {
         if (isDeck)
         {
-            GameObject temp = currentPos.gameObject;
-            AfterDrop(droppable);
-            previous.GetComponent<Unit>().AfterDrop(temp);
+            AfterDrop(droppedTile);
+            droppedTile.GetComponent<Unit>().AfterDrop(previousTile);
         } else
         {
-            previous.GetComponent<Unit>().AfterDrop(currentPos.gameObject);
-            AfterDrop(droppable);
+            droppedTile.GetComponent<Unit>().AfterDrop(previousTile);
+            AfterDrop(droppedTile);
         }
 
     }

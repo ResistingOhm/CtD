@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEditorInternal.ReorderableList;
@@ -11,9 +13,6 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
     Vector3 defaultPos;
     Vector3 dragScale = new Vector3(1.3f, 1.3f, 1.3f);
     Vector3 defaultScale = new Vector3(1.0f, 1.0f, 1.0f);
-
-    public event Action<GameObject> dropAction;
-    public event Action<GameObject, GameObject> changeAction;
 
     public DraggableObject objectNow;
 
@@ -37,6 +36,7 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (objectNow == null) return;
         defaultPos = this.transform.position;
         objectNow.wasDroppedOnValidSlot = false;
 
@@ -45,38 +45,47 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (objectNow == null) return;
         objectNow.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(eventData.position);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        objectNow.transform.localScale = defaultScale;
-
+        if (objectNow == null) return;
         if (!objectNow.wasDroppedOnValidSlot)
         {
+            objectNow.transform.localScale = defaultScale;
             objectNow.transform.position = defaultPos;
             return;
         }
-
-
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        var g = eventData.pointerDrag.GetComponent<DroppableTile>().objectNow.GetComponent<DraggableObject>();
+        var g = eventData.pointerDrag.GetComponent<DroppableTile>().objectNow;
         if (g == null) return;
 
-        if (CanAccept(g.tag))
+        var gt = g.tag;
+
+        g.transform.localScale = defaultScale;
+
+        if (gt.Equals("Item") && objectNow != null && objectNow.tag.Equals("Ally"))
+        {
+            g.CanDeploy(objectNow.gameObject);
+            return;
+        }
+
+        if (CanAccept(gt))
         {
             g.wasDroppedOnValidSlot = true;
             g.CanDeploy(this.gameObject);
             return;
         }
 
-        if (CanChange(g.tag))
+        if (CanChange(gt))
         {
             g.wasDroppedOnValidSlot = true;
-            g.CanChange(this.gameObject, objectNow.gameObject);
+            g.CanChange(this.gameObject, g.gameObject);
             return;
         }
     }

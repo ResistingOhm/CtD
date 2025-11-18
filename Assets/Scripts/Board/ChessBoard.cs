@@ -44,13 +44,10 @@ public class ChessBoard : MonoBehaviour
                 var n = g.GetComponent<ChessGrid>();
                 n.SetMainColor(isBlack? Color.black: Color.white);
                 n.SetIndex(x, y);
-                g.AddComponent(typeof(DroppableTile));
                 if (y < boardSize.y / 2)
                 {
+                    g.AddComponent(typeof(DroppableTile));
                     g.GetComponent<DroppableTile>().SetTag("Ally");
-                } else
-                {
-                    g.GetComponent<DroppableTile>().SetTag("Enemy");
                 }
                 board[x, y] = n;
                 isBlack = !isBlack;

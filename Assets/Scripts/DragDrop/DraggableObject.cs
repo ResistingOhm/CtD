@@ -13,9 +13,9 @@ public class DraggableObject : MonoBehaviour
         dropAction?.Invoke(g);
     }
 
-    public void CanChange(GameObject droppable, GameObject previous)
+    public void CanChange(GameObject droppedTile, GameObject previousTile)
     {
-        changeAction?.Invoke(droppable, previous);
+        changeAction?.Invoke(droppedTile, previousTile);
     }
 
 }
