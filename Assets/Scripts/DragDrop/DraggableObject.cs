@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class DraggableObject : MonoBehaviour
 {
     public event Action<GameObject> dropAction;
-    public event Action<GameObject, GameObject> changeAction;
+    public event Action<DroppableTile, DroppableTile> changeAction;
     public bool wasDroppedOnValidSlot = false;
 
     public void CanDeploy(GameObject g)
@@ -13,7 +13,7 @@ public class DraggableObject : MonoBehaviour
         dropAction?.Invoke(g);
     }
 
-    public void CanChange(GameObject droppedTile, GameObject previousTile)
+    public void CanChange(DroppableTile droppedTile, DroppableTile previousTile)
     {
         changeAction?.Invoke(droppedTile, previousTile);
     }

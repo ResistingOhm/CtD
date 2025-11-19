@@ -99,6 +99,7 @@ GameObject:
   - component: {fileID: 3440506089035662472}
   - component: {fileID: 6504345698226608107}
   - component: {fileID: -7064119741285983412}
+  - component: {fileID: 6244551717151534766}
   - component: {fileID: 1209169694237315298}
   m_Layer: 7
   m_Name: InventoryGrid
@@ -269,6 +270,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &6244551717151534766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3655989710888760813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9cd5115f23d2ed4a9e61804c05d9a53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1209169694237315298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,5 +295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acceptableTag: 
+  objectNow: {fileID: 0}
+  canDrag: 1
   canAccept: 1
   canChange: 1

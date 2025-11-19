@@ -44,11 +44,19 @@ public class ChessBoard : MonoBehaviour
                 var n = g.GetComponent<ChessGrid>();
                 n.SetMainColor(isBlack? Color.black: Color.white);
                 n.SetIndex(x, y);
+                g.AddComponent(typeof(DroppableTile));
+                var t = g.GetComponent<DroppableTile>();
                 if (y < boardSize.y / 2)
                 {
-                    g.AddComponent(typeof(DroppableTile));
-                    g.GetComponent<DroppableTile>().SetTag("Ally");
+                    t.SetTag("Ally");
+                    t.SetDrag(true);
                 }
+                else
+                {
+                    t.SetTag("Enemy");
+                    t.SetDrag(false);
+                }
+                n.SetTile();
                 board[x, y] = n;
                 isBlack = !isBlack;
             }
@@ -192,7 +200,6 @@ public class ChessBoard : MonoBehaviour
         foreach (ChessGrid c in board)
         {
             c.gameObject.GetComponent<DroppableTile>().enabled = true;
-            c.Refresh();
         }
     }
 }

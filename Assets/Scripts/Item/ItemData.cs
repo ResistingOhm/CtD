@@ -6,6 +6,7 @@ public class ItemData
 {
     [Header("-Basic")]
     public string itemName;
+    public int itemID;
     public int itemCost;
 
     [Header("-Status")]

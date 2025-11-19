@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     public bool isRunning = false;
 
-    public UnitDeck playerDeck;
+    public Player player;
     public UnitDeck enemyDeck;
 
     public List<Unit> tempUnitPool = new List<Unit>();
@@ -24,26 +24,27 @@ public class GameManager : MonoBehaviour
     public void TestEnemySpawn()
     {
         var j = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
-        j.InitialSetting(DataManager.unitData[1], enemyDeck, false);
+        j.InitialSetting(DataManager.unitData[1], 0, enemyDeck, false);
         j.AfterDrop(ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-6, 3)).gameObject);
         
         var k = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
-        k.InitialSetting(DataManager.unitData[1], enemyDeck, false);
+        k.InitialSetting(DataManager.unitData[1], 0, enemyDeck, false);
         k.AfterDrop(ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1)).gameObject);
     }
 
-    public void Spawn()
+    public void SpawnAlly()
     {
-        var g = ObjectPoolManager.Instance.SpawnsFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity, 16);
-        foreach (var p in g)
-        {
-            p.InitialSetting(DataManager.unitData[0], playerDeck, true);
-        }
+        player.AddUnit(0,0,0);
+    }
+
+    public void SpawnItem()
+    {
+        player.AddItem(0, 0);
     }
 
     public void StartFight()
     {
-        tempUnitPool.AddRange(playerDeck.units);
+        tempUnitPool.AddRange(player.GetDeckUnits());
         tempUnitPool.AddRange(enemyDeck.units);
 
         ChessBoard.Instance.StartFighting();
@@ -66,6 +67,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var unit in tempUnitPool)
         {
+            unit.gameObject.SetActive(true);
             unit.EndFighting();
         }
         tempUnitPool.Clear();

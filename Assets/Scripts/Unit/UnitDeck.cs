@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static System.Net.WebRequestMethods;
@@ -21,14 +22,15 @@ public class UnitDeck : MonoBehaviour
         }
     }
 
-    public bool IsAbleToAddUnit()
+    public bool IsAbleToAddUnitToField()
     {
         return units.Count < deckLevel;
     }
 
-    public void AddUnit(Unit u)
+    public void AddUnitToField(Unit u)
     {
         units.Add(u);
+        u.isDeck = true;
         var a = u.GetUnitSynergy();
         foreach (var v in a)
         {
@@ -50,9 +52,10 @@ public class UnitDeck : MonoBehaviour
         }
     }
 
-    public void RemoveUnit(Unit u)
+    public void RemoveUnitFromField(Unit u)
     {
         units.Remove(u);
+        u.isDeck = false;
         var a = u.GetUnitSynergy();
         foreach (var v in a)
         {

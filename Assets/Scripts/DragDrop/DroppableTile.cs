@@ -14,14 +14,23 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
     Vector3 dragScale = new Vector3(1.3f, 1.3f, 1.3f);
     Vector3 defaultScale = new Vector3(1.0f, 1.0f, 1.0f);
 
+    public event Action filledAction;
+    public event Action emptyAction;
+
     public DraggableObject objectNow;
 
+    public bool canDrag = true;
     public bool canAccept = true;
     public bool canChange = true;
 
     public void SetTag(string tag)
     {
         acceptableTag = tag;
+    }
+
+    public void SetDrag(bool t)
+    {
+        canDrag = t;
     }
 
     public bool CanAccept(string tag)
@@ -36,6 +45,7 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (!canDrag) return;
         if (objectNow == null) return;
         defaultPos = this.transform.position;
         objectNow.wasDroppedOnValidSlot = false;
@@ -45,12 +55,14 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!canDrag) return;
         if (objectNow == null) return;
         objectNow.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(eventData.position);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!canDrag) return;
         if (objectNow == null) return;
         if (!objectNow.wasDroppedOnValidSlot)
         {
@@ -60,9 +72,30 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
         }
     }
 
+    public void NowFilled(DraggableObject g)
+    {
+        canAccept = false;
+        objectNow = g;
+        filledAction?.Invoke();
+    }
+
+    public void NowEmpty()
+    {
+        canAccept = true;
+        objectNow = null;
+        emptyAction?.Invoke();
+    }
+
+    public void Refresh()
+    {
+        canAccept = (objectNow == null);
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
-        var g = eventData.pointerDrag.GetComponent<DroppableTile>().objectNow;
+        var t = eventData.pointerDrag.GetComponent<DroppableTile>();
+        if (!t.canDrag) return;
+        var g = t.objectNow;
         if (g == null) return;
 
         var gt = g.tag;
@@ -85,7 +118,7 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
         if (CanChange(gt))
         {
             g.wasDroppedOnValidSlot = true;
-            g.CanChange(this.gameObject, g.gameObject);
+            g.CanChange(this, t);
             return;
         }
     }

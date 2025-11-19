@@ -8,10 +8,11 @@ public class Unit : MonoBehaviour
     private UnitData unitData;
     [Range(0, 2)]
     private int level = 0;
-    private Item[] items = new Item[3];
+    private int[] items = {-1,-1,-1};
     private UnitDeck deck;
-    private bool isDeck = false;
+    public bool isDeck = false;
 
+    public DroppableTile currentTile;
     public ChessGrid currentPos;
     public Unit target;
 
@@ -46,16 +47,44 @@ public class Unit : MonoBehaviour
         currentState = idleState;
     }
 
-    public void InitialSetting(UnitData u, UnitDeck d, bool isAlly)
+    public void InitialSetting(UnitData u, int lv, UnitDeck d, bool isAlly, DroppableTile tile = null)
     {
         unitData = u;
+        level = lv;
         deck = d;
 
         gameObject.tag = isAlly ? "Ally" : "Enemy";
 
+        currentTile = tile;
+        if (currentTile  != null)
+        {
+            currentTile.NowFilled(draggableObject);
+            this.transform.position = currentTile.transform.position;
+        }
 
         status = new UnitTotalStatus();
         status.synergy = new Status[GetUnitSynergy().Length];
+        UnitStatusSetting();
+    }
+
+    public void DeleteAll()
+    {
+        unitData = null;
+        level = 0;
+        deck = null;
+        gameObject.tag = "Untagged";
+        currentTile.NowEmpty();
+        currentTile = null;
+        items[0] = -1;
+        items[1] = -1;
+        items[2] = -1;
+
+        this.gameObject.SetActive(false);
+    }
+
+    public void LevelUp()
+    {
+        level += 1;
         UnitStatusSetting();
     }
 
@@ -83,6 +112,7 @@ public class Unit : MonoBehaviour
     public void StartFighting()
     {
         draggableObject.enabled = false;
+        currentPos = currentTile.gameObject.GetComponent<ChessGrid>();
     }
 
     public void DoAction()
@@ -93,10 +123,31 @@ public class Unit : MonoBehaviour
     public void EndFighting()
     {
         draggableObject.enabled = true;
+        currentPos = null;
+        AfterDrop(currentTile.gameObject);
         SetState(idleState);
         RefreshStatus();
     }
 
+    public int GetUnitID()
+    {
+        return unitData.unitID;
+    }
+
+    public int GetUnitCost()
+    {
+        return unitData.unitCost;
+    }
+
+    public int GetUnitLevel()
+    {
+        return level;
+    }
+
+    public int[] GetItems()
+    {
+        return items;
+    }
 
     public float GetAttackSpeed()
     {
@@ -140,7 +191,7 @@ public class Unit : MonoBehaviour
     {
         System.Collections.Generic.List<Unit> enemy;
         if (this.CompareTag("Ally")) enemy = GameManager.Instance.enemyDeck.units;
-        else enemy = GameManager.Instance.playerDeck.units;
+        else enemy = GameManager.Instance.player.GetDeckUnits();
 
         int min = 255;
 
@@ -171,14 +222,14 @@ public class Unit : MonoBehaviour
         if (status.unitCurrentHealth > status.maxHealth) status.unitCurrentHealth = status.maxHealth;
     }
 
-    public bool AddItem(Item i)
+    public bool AddItem(ItemData i)
     {
         for (int j = 0; j < 3; j++)
         {
-            if (items[j] == null)
+            if (items[j] == -1)
             {
-                items[j] = i;
-                status.items[j] = Status.Converter(i.itemData);
+                items[j] = i.itemID;
+                status.items[j] = Status.Converter(i);
 
                 return true;
             }
@@ -208,44 +259,35 @@ public class Unit : MonoBehaviour
     {
         this.transform.position = g.transform.position;
 
-        if (currentPos != null)
+        if (currentTile != null && currentTile.objectNow == draggableObject)
         {
-            currentPos.NowEmpty();
-            currentPos = null;
+            currentTile.NowEmpty();
+            currentTile = null;
         }
+
+        currentTile = g.GetComponent<DroppableTile>();
+        currentTile.NowFilled(draggableObject);
 
         if (g.CompareTag("Board"))
         {
-            currentPos = g.GetComponent<ChessGrid>();
-            currentPos.NowFilled(draggableObject);
             if (!isDeck)
             {
-                deck.AddUnit(this);
-                isDeck = true;
+                deck.AddUnitToField(this);
                 RefreshStatus();
             }
         } else if (g.CompareTag("Inventory"))
         {
             if (isDeck)
             {
-                deck.RemoveUnit(this);
-                isDeck = false;
+                deck.RemoveUnitFromField(this);
                 RefreshStatus();
             }
         }
     }
 
-    public void AfterChange(GameObject droppedTile, GameObject previousTile)
+    public void AfterChange(DroppableTile droppedTile, DroppableTile previousTile)
     {
-        if (isDeck)
-        {
-            AfterDrop(droppedTile);
-            droppedTile.GetComponent<Unit>().AfterDrop(previousTile);
-        } else
-        {
-            droppedTile.GetComponent<Unit>().AfterDrop(previousTile);
-            AfterDrop(droppedTile);
-        }
-
+        droppedTile.objectNow.GetComponent<Unit>().AfterDrop(previousTile.gameObject);
+        AfterDrop(droppedTile.gameObject);
     }
 }

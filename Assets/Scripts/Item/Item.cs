@@ -15,25 +15,59 @@ public class Item : MonoBehaviour
         draggableObject.changeAction += AfterChange;
     }
 
-    public void AfterDrop(GameObject g)
+    public void InitialSetting(ItemData i, DroppableTile tile)
     {
-        if (g.CompareTag("Ally"))
+        itemData = i;
+        currentTile = tile;
+        if (currentTile != null)
         {
-            if (g.GetComponent<Unit>().AddItem(this))
-            {
-                this.gameObject.SetActive(false);
-            }
-        }
-        else if (g.CompareTag("Inventory"))
-        {
-            this.transform.position = g.transform.position;
-
+            currentTile.NowFilled(draggableObject);
+            this.transform.position = currentTile.transform.position;
         }
     }
 
-    public void AfterChange(GameObject droppedTile, GameObject previousTile)
+    public void DeleteAll()
     {
-        AfterDrop(droppedTile);
-        droppedTile.GetComponent<Item>().AfterDrop(previousTile);
+        itemData = null;
+        currentTile.NowEmpty();
+        currentTile = null;
+
+        this.gameObject.SetActive(false);
+    }
+
+    public void AfterDrop(GameObject g)
+    {
+
+        if (g.CompareTag("Ally"))
+        {
+            if (g.GetComponent<Unit>().AddItem(this.itemData))
+            {
+                DeleteAll();
+                return;
+            } else
+            {
+                draggableObject.wasDroppedOnValidSlot = false;
+                return;
+            }
+        }
+
+        if (currentTile != null && currentTile.objectNow == draggableObject)
+        {
+            currentTile.NowEmpty();
+            currentTile = null;
+        }
+
+        if (g.CompareTag("Inventory"))
+        {
+            this.transform.position = g.transform.position;
+            currentTile = g.GetComponent<DroppableTile>();
+            currentTile.NowFilled(draggableObject);
+        }
+    }
+
+    public void AfterChange(DroppableTile droppedTile, DroppableTile previousTile)
+    {
+        droppedTile.objectNow.GetComponent<Item>().AfterDrop(previousTile.gameObject);
+        AfterDrop(droppedTile.gameObject);
     }
 }
