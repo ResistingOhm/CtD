@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private DroppableTile[] itemInventory = new DroppableTile[9];
 
-    public int money = int.MaxValue;
+    public int gold;
     private UnitDeck deck;
 
     void Start()
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     public bool AddUnit(int id, int level, int cost)
     {
-        if (cost > money) return false;
+        if (cost > gold) return false;
 
         var g = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
         g.InitialSetting(DataManager.unitData[id], level, deck, true);
@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
 
         if (UnitLevelUp(g))
         {
-            money -= cost;
+            gold -= cost;
             return true;
         }
 
@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
             if (unitInventory[i].canAccept)
             {
                 g.SetCurrentTile(unitInventory[i]);
-                money -= cost;
+                gold -= cost;
                 return true;
             }
         }
@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
 
     public bool AddItem(int id, int cost)
     {
-        if (cost > money) return false;
+        if (cost > gold) return false;
 
         for (int i = 0; i < 9; i++)
         {
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
             {
                 var g = ObjectPoolManager.Instance.SpawnFromPool<Item>("Item", Vector3.zero, Quaternion.identity);
                 g.InitialSetting(DataManager.itemData[id], itemInventory[i]);
-                money -= cost;
+                gold -= cost;
 
                 return true;
             }
@@ -69,7 +69,7 @@ public class Player : MonoBehaviour
 
     public void SellUnit(Unit u)
     {
-        money += u.GetUnitCost() * u.GetUnitLevel();
+        gold += u.GetUnitCost() * u.GetUnitLevel();
         var items = u.GetItems();
 
         for (int i = 0; i < items.Length; i++)
@@ -80,7 +80,7 @@ public class Player : MonoBehaviour
 
     public void SellItem(int i)
     {
-        money += DataManager.itemData[i].itemCost;
+        gold += DataManager.itemData[i].itemCost;
     }
 
     public void RemoveUnit(Unit u)
@@ -149,9 +149,9 @@ public class Player : MonoBehaviour
         return false;
     }
 
-    public List<Unit> GetDeckUnits()
+    public int GetDeckLevel()
     {
-        return deck.units;
+        return deck.deckLevel;
     }
 
 }

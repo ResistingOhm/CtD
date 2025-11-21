@@ -10655,6 +10655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRunning: 1
   player: {fileID: 1250663378}
+  playerDeck: {fileID: 1250663377}
   enemyDeck: {fileID: 519244068}
   tempUnitPool: []
 --- !u!4 &2122348572

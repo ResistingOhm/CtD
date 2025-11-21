@@ -217,7 +217,7 @@ public class Unit : MonoBehaviour
     {
         System.Collections.Generic.List<Unit> enemy;
         if (this.CompareTag("Ally")) enemy = GameManager.Instance.enemyDeck.units;
-        else enemy = GameManager.Instance.player.GetDeckUnits();
+        else enemy = GameManager.Instance.playerDeck.units;
 
         int min = 255;
 
@@ -296,6 +296,21 @@ public class Unit : MonoBehaviour
 
     public void AfterDrop(GameObject g)
     {
+        if (g.CompareTag("Board"))
+        {
+            if (!deck.IsAbleToAddUnitToField())
+            {
+                draggableObject.wasDroppedOnValidSlot = false;
+                return;
+            }
+
+            if (!isDeck)
+            {
+                deck.AddUnitToField(this);
+                RefreshStatus();
+            }
+        }
+
         this.transform.position = g.transform.position;
 
         if (currentTile != null && currentTile.objectNow == draggableObject)
@@ -307,14 +322,8 @@ public class Unit : MonoBehaviour
         currentTile = g.GetComponent<DroppableTile>();
         currentTile.NowFilled(draggableObject);
 
-        if (g.CompareTag("Board"))
-        {
-            if (!isDeck)
-            {
-                deck.AddUnitToField(this);
-                RefreshStatus();
-            }
-        } else if (g.CompareTag("Inventory"))
+
+        if (g.CompareTag("Inventory"))
         {
             if (isDeck)
             {

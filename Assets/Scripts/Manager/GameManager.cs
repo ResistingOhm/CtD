@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     public bool isRunning = false;
 
-    public Player player;
+    public UnitDeck playerDeck;
     public UnitDeck enemyDeck;
 
     public List<Unit> tempUnitPool = new List<Unit>();
@@ -32,19 +32,9 @@ public class GameManager : MonoBehaviour
         k.AfterDrop(ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1)).gameObject);
     }
 
-    public void SpawnAlly()
-    {
-        player.AddUnit(0,0,0);
-    }
-
-    public void SpawnItem()
-    {
-        player.AddItem(0, 0);
-    }
-
     public void StartFight()
     {
-        tempUnitPool.AddRange(player.GetDeckUnits());
+        tempUnitPool.AddRange(playerDeck.units);
         tempUnitPool.AddRange(enemyDeck.units);
 
         ChessBoard.Instance.StartFighting();
