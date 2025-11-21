@@ -55,9 +55,9 @@ public class Unit : MonoBehaviour
 
         gameObject.tag = isAlly ? "Ally" : "Enemy";
 
-        currentTile = tile;
-        if (currentTile  != null)
+        if (tile  != null)
         {
+            currentTile = tile;
             currentTile.NowFilled(draggableObject);
             this.transform.position = currentTile.transform.position;
         }
@@ -67,14 +67,24 @@ public class Unit : MonoBehaviour
         UnitStatusSetting();
     }
 
+    public void SetCurrentTile(DroppableTile tile)
+    {
+        currentTile = tile;
+        currentTile.NowFilled(draggableObject);
+        this.transform.position = currentTile.transform.position;
+    }
+
     public void DeleteAll()
     {
         unitData = null;
         level = 0;
         deck = null;
         gameObject.tag = "Untagged";
-        currentTile.NowEmpty();
-        currentTile = null;
+        if (currentTile != null)
+        {
+            currentTile.NowEmpty();
+            currentTile = null;
+        }
         items[0] = -1;
         items[1] = -1;
         items[2] = -1;

@@ -24,7 +24,11 @@ public class Player : MonoBehaviour
     {
         if (cost > money) return false;
 
-        if (UnitLevelUp(id, level))
+        var g = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
+        g.InitialSetting(DataManager.unitData[id], level, deck, true);
+        units.Add(g);
+
+        if (UnitLevelUp(g))
         {
             money -= cost;
             return true;
@@ -34,14 +38,13 @@ public class Player : MonoBehaviour
         {
             if (unitInventory[i].canAccept)
             {
-                var g = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
-                g.InitialSetting(DataManager.unitData[id], level, deck, true, unitInventory[i]);
-                units.Add(g);
+                g.SetCurrentTile(unitInventory[i]);
                 money -= cost;
-
                 return true;
             }
         }
+        units.Remove(g);
+        g.DeleteAll();
 
         return false;
     }
@@ -92,8 +95,13 @@ public class Player : MonoBehaviour
         u.DeleteAll();
     }
 
-    public bool UnitLevelUp(int id, int lv)
+    public bool UnitLevelUp(Unit u)
     {
+        int id = u.GetUnitID();
+        int lv = u.GetUnitLevel();
+
+        if (lv >= 2) return false;
+
         List<Unit> temp = new List<Unit>();
         for (int i = 0; i < units.Count; i++)
         {
@@ -103,22 +111,37 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (temp.Count >= 2)
+        if (temp.Count >= 3)
         {
-            var f = temp.First();
+            var f = temp[0];
+            var s = temp[1];
             var l = temp.Last();
-            var items = l.GetItems();
+            var sitems = s.GetItems();
+            var litems = l.GetItems();
             f.LevelUp();
 
-            for (int i = 0; i < items.Length; i++)
+            for (int i = 0; i < sitems.Length; i++)
             {
-                if (!f.AddItem(DataManager.itemData[items[i]]))
+                if (sitems[i] == -1) break;
+                if (!f.AddItem(DataManager.itemData[sitems[i]]))
                 {
-                    SellItem(items[i]);
+                    SellItem(sitems[i]);
+                }
+            }
+
+            for (int i = 0; i < litems.Length; i++)
+            {
+                if (litems[i] == -1) break;
+                if (!f.AddItem(DataManager.itemData[litems[i]]))
+                {
+                    SellItem(litems[i]);
                 }
             }
 
             RemoveUnit(l);
+            RemoveUnit(s);
+
+            UnitLevelUp(f);
 
             return true;
         }
