@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 public class ResolutionController : MonoBehaviour
@@ -37,22 +38,46 @@ public class ResolutionController : MonoBehaviour
 
             if (r.width == Screen.width && r.height == Screen.height)
             {
-                resolutionDropDown.value = optionNum;
+                if (!PlayerPrefs.HasKey("Resolution"))
+                {
+                    resolutionDropDown.value = optionNum;
+                    PlayerPrefs.SetInt("Resolution", optionNum);
+                }
             }
 
             optionNum++;
         }
+
+        if (!PlayerPrefs.HasKey("ScreenMode"))
+        {
+            PlayerPrefs.SetInt("ScreenMode", 2);
+        }
+
+        int re = PlayerPrefs.GetInt("Resolution");
+        int sc = PlayerPrefs.GetInt("ScreenMode");
+
+        if (re + 1 > optionNum)
+        {
+            re = optionNum - 1;
+        }
+
+        currentScreen = sc;
+        resolutionDropDown.value = re;
     }
 
     public void ResolutionOptionChanged(int n)
     {
         currentResolution = n;
+        PlayerPrefs.SetInt("Resolution", n);
+        PlayerPrefs.Save();
         RefreshScreen();
     }
 
     public void ScreenOptionChanged(int n)
     {
         currentScreen = n;
+        PlayerPrefs.SetInt("ScreenMode", n);
+        PlayerPrefs.Save();
         RefreshScreen();
     }
 

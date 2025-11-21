@@ -7806,6 +7806,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 2869bd23d55dd144caf7f9b84e398e68, type: 2}
+  master: {fileID: 582466091}
+  bgm: {fileID: 214173485}
+  sfx: {fileID: 2013602765}
 --- !u!114 &1440646344
 MonoBehaviour:
   m_ObjectHideFlags: 0

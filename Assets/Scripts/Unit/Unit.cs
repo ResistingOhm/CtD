@@ -16,7 +16,7 @@ public class Unit : MonoBehaviour
     public ChessGrid currentPos;
     public Unit target;
 
-    private Collider2D collider;
+    private Collider2D unitCollider;
     private Rigidbody2D rb;
     private DraggableObject draggableObject;
     private UnitSprite unitSprite;
@@ -43,7 +43,7 @@ public class Unit : MonoBehaviour
         draggableObject.dropAction += AfterDrop;
         draggableObject.changeAction += AfterChange;
 
-        collider = GetComponent<Collider2D>();
+        unitCollider = GetComponent<Collider2D>();
         unitSprite = GetComponent<UnitSprite>();
     }
 
@@ -141,7 +141,7 @@ public class Unit : MonoBehaviour
     public void EndFighting()
     {
         draggableObject.enabled = true;
-        collider.enabled = true;
+        unitCollider.enabled = true;
         SetState(idleState);
 
         if (currentPos != null)
@@ -244,7 +244,7 @@ public class Unit : MonoBehaviour
 
     public void UnitDeadAction()
     {
-        collider.enabled = false;
+        unitCollider.enabled = false;
         SetVelocity(0);
         currentPos.cost = 1;
         currentPos = null;
