@@ -31,8 +31,6 @@ public class ShopManager : MonoBehaviour
 
     public void RerollShop()
     {
-        ClearSlots();
-
         for (int i = 0; i < unitSlots.Length; i++)
         {
             UnitData unitData = GetRandomUnit();

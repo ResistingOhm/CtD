@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ShopItemSlot
+public class ShopItemSlot: MonoBehaviour
 {
     private ItemData slotData;
 
