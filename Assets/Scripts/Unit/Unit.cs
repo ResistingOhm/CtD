@@ -7,7 +7,7 @@ public class Unit : MonoBehaviour
 {
     private UnitData unitData;
     [Range(0, 2)]
-    private int level = 0;
+    public int level = 0;
     private int[] items = {-1,-1,-1};
     private UnitDeck deck;
     public bool isDeck = false;
@@ -16,8 +16,10 @@ public class Unit : MonoBehaviour
     public ChessGrid currentPos;
     public Unit target;
 
+    private Collider2D collider;
     private Rigidbody2D rb;
     private DraggableObject draggableObject;
+    private UnitSprite unitSprite;
 
     [Header("-Status")]
     private UnitTotalStatus status;
@@ -40,6 +42,9 @@ public class Unit : MonoBehaviour
         draggableObject = GetComponent<DraggableObject>();
         draggableObject.dropAction += AfterDrop;
         draggableObject.changeAction += AfterChange;
+
+        collider = GetComponent<Collider2D>();
+        unitSprite = GetComponent<UnitSprite>();
     }
 
      void OnEnable()
@@ -89,6 +94,8 @@ public class Unit : MonoBehaviour
         items[1] = -1;
         items[2] = -1;
 
+        unitSprite.SetLevelSprite(level);
+
         this.gameObject.SetActive(false);
     }
 
@@ -96,6 +103,7 @@ public class Unit : MonoBehaviour
     {
         level += 1;
         UnitStatusSetting();
+        unitSprite.SetLevelSprite(level);
     }
 
     private void UnitStatusSetting()
@@ -133,9 +141,17 @@ public class Unit : MonoBehaviour
     public void EndFighting()
     {
         draggableObject.enabled = true;
-        currentPos = null;
-        AfterDrop(currentTile.gameObject);
+        collider.enabled = true;
         SetState(idleState);
+
+        if (currentPos != null)
+        {
+            currentPos.cost = 1;
+            currentPos = null;
+        }
+        unitSprite.SetVisibility(true);
+
+        AfterDrop(currentTile.gameObject);
         RefreshStatus();
     }
 
@@ -224,6 +240,19 @@ public class Unit : MonoBehaviour
         if (status.unitCurrentHealth <= 0) SetState(deadState);
 
         return i;
+    }
+
+    public void UnitDeadAction()
+    {
+        collider.enabled = false;
+        SetVelocity(0);
+        currentPos.cost = 1;
+        currentPos = null;
+    }
+
+    public void UnitDisableAfterDeath()
+    {
+        unitSprite.SetVisibility(false);
     }
 
     public void GainHealth(int n)

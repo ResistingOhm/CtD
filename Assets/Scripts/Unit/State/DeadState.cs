@@ -16,9 +16,7 @@ public class DeadState: IUnitState
     public void Enter()
     {
         //Set Animation or Sprite to Dead
-        unit.SetVelocity(0);
-        unit.currentPos.cost = 1;
-        unit.currentPos = null;
+        unit.UnitDeadAction();
         deadTime = 0f;
     }
 
@@ -28,7 +26,7 @@ public class DeadState: IUnitState
 
         if (deadTime > 0.2f)
         {
-            unit.gameObject.SetActive(false);
+            unit.UnitDisableAfterDeath();
         }
     }
 

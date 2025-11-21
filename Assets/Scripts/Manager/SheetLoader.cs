@@ -28,6 +28,8 @@ public class SheetLoader : MonoBehaviour
                     DataManager.unitSynergyData.Add(e);
                 foreach (var i in root.ItemData)
                     DataManager.itemData.Add(i);
+                foreach (var i in root.ShopProbabilityData)
+                    DataManager.shopData.Add(i);
 
                 Debug.Log(DataManager.unitData);
 
@@ -46,5 +48,6 @@ public class SheetLoader : MonoBehaviour
         public UnitData[] UnitData;
         public UnitSynergyData[] UnitSynergy;
         public ItemData[] ItemData;
+        public ShopProbabilityData[] ShopProbabilityData;
     }
 }

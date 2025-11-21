@@ -67,7 +67,6 @@ public class GameManager : MonoBehaviour
 
         foreach (var unit in tempUnitPool)
         {
-            unit.gameObject.SetActive(true);
             unit.EndFighting();
         }
         tempUnitPool.Clear();

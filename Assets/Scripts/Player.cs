@@ -43,8 +43,7 @@ public class Player : MonoBehaviour
                 return true;
             }
         }
-        units.Remove(g);
-        g.DeleteAll();
+        RemoveUnit(g);
 
         return false;
     }
@@ -103,6 +102,7 @@ public class Player : MonoBehaviour
         if (lv >= 2) return false;
 
         List<Unit> temp = new List<Unit>();
+        temp.Clear();
         for (int i = 0; i < units.Count; i++)
         {
             if (units[i].GetUnitID() == id && units[i].GetUnitLevel() == lv)
@@ -115,7 +115,7 @@ public class Player : MonoBehaviour
         {
             var f = temp[0];
             var s = temp[1];
-            var l = temp.Last();
+            var l = temp[temp.Count-1];
             var sitems = s.GetItems();
             var litems = l.GetItems();
             f.LevelUp();
