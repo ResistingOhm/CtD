@@ -8,4 +8,5 @@ public class DataManager
     public static List<UnitSynergyData> unitSynergyData = new List<UnitSynergyData>();
     public static List<ItemData> itemData = new List<ItemData>();
     public static List<ShopProbabilityData> shopData = new List<ShopProbabilityData>();
+    public static List<NodeCluster> nodeClusterData = new List<NodeCluster>();
 }

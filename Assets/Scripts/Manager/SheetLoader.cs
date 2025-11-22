@@ -44,10 +44,11 @@ public class SheetLoader : MonoBehaviour
                     DataManager.unitSynergyData.Add(e);
                 foreach (var i in root.ItemData)
                     DataManager.itemData.Add(i);
-                foreach (var i in root.ShopProbabilityData)
-                    DataManager.shopData.Add(i);
+                foreach (var i in root.ClusterData)
+                    DataManager.nodeClusterData.Add(i);
 
-                Debug.Log(DataManager.unitData);
+                Debug.Log("Succesfully load Data");
+
                 isLoading = false;
                 loadingPanel.SetActive(false);
 
@@ -68,5 +69,6 @@ public class SheetLoader : MonoBehaviour
         public UnitSynergyData[] UnitSynergy;
         public ItemData[] ItemData;
         public ShopProbabilityData[] ShopProbabilityData;
+        public NodeCluster[] ClusterData;
     }
 }
