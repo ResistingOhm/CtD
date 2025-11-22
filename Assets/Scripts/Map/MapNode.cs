@@ -8,10 +8,10 @@ using UnityEngine.UI;
 public enum NodeType
 {
     Battle = 0,
-    Shop = 1,
+    Event = 1,
     Rest = 2,
-    Event = 3,
-    Elite = 4,
+    Elite = 3,
+    Shop = 4,
     Boss = 5,
 }
 

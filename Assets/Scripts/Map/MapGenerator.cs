@@ -251,14 +251,18 @@ public class MapGenerator : MonoBehaviour
         var cluster = GetClusterForLayer(layer);
         int total = 0;
 
-        foreach (var w in cluster.weightedTypes) total += w.weight;
+        for (int i = 0; i < System.Enum.GetValues(typeof(NodeType)).Length - 1; i++)
+        {
+            total += cluster.GetWeight((NodeType)i);
+        }
         int roll = Rand(0, total);
         int sum = 0;
 
-        foreach (var w in cluster.weightedTypes)
+        for (int i = 0; i < System.Enum.GetValues(typeof(NodeType)).Length - 1; i++)
         {
-            sum += w.weight;
-            if (roll < sum) return w.type;
+            sum += cluster.GetWeight((NodeType)i);
+            if (roll < sum) return (NodeType)i;
+
         }
 
         return NodeType.Battle;
