@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public class ShopManager : MonoBehaviour
     public ShopItemSlot[] itemSlots = new ShopItemSlot[3];
 
     private List<int> unitPool;
+    private int[] probabilityPool = { 1, 1, 1, 1, 1 };
 
     private void Start()
     {
@@ -18,6 +20,28 @@ public class ShopManager : MonoBehaviour
         for (int i = 0; i < DataManager.unitData.Count; i++)
         {
             unitPool.Add(9);
+        }
+
+        var candidates = DataManager.unitData.FindAll(u => u.unitCost == 1 && unitPool[u.unitID] > 0);
+        if (candidates.Count == 0)
+            return;
+
+        for (int i = 0; i < unitSlots.Length; i++)
+        {
+            UnitData unitData = candidates[Random.Range(0, candidates.Count)];
+            if (unitData != null)
+            {
+                unitSlots[i].SetSlotData(unitData);
+            }
+        }
+
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            ItemData itemData = DataManager.itemData[Random.Range(0, DataManager.itemData.Count)];
+            if (itemData != null)
+            {
+                itemSlots[i].SetSlotData(itemData);
+            }
         }
     }
 
@@ -33,19 +57,25 @@ public class ShopManager : MonoBehaviour
     {
         for (int i = 0; i < unitSlots.Length; i++)
         {
+            unitSlots[i].ClearSlot();
+
             UnitData unitData = GetRandomUnit();
             if (unitData != null)
             {
                 unitSlots[i].SetSlotData(unitData);
+                unitSlots[i].gameObject.SetActive(true);
             }
         }
 
-        for (int i = 0; i < unitSlots.Length; i++)
+        for (int i = 0; i < itemSlots.Length; i++)
         {
+            itemSlots[i].ClearSlot();
+
             ItemData itemData = DataManager.itemData[Random.Range(0, DataManager.itemData.Count)];
             if (itemData != null)
             {
                 itemSlots[i].SetSlotData(itemData);
+                itemSlots[i].gameObject.SetActive(true);
             }
         }
     }
@@ -80,34 +110,19 @@ public class ShopManager : MonoBehaviour
             return 1;
         }
 
-        // ·£´ý 0..(sum-1)
-        int r = Random.Range(0, 100);
-        r += 1;
         int sum = 0;
-        sum += Mathf.Max(0, probs.cost1);
-        if (r < sum)
+        for (int i = 0; i < 5; i++) sum += Mathf.Max(0, probs.GetProbability(i));
+
+        int r = Random.Range(0, sum);
+        r += 1;
+        int cumulative = 0;
+        for (int i = 0; i < 5; i++)
         {
-            return 1;
-        }
-        sum += Mathf.Max(0, probs.cost2);
-        if (r < sum)
-        {
-            return 2;
-        }
-        sum += Mathf.Max(0, probs.cost3);
-        if (r < sum)
-        {
-            return 3;
-        }
-        sum += Mathf.Max(0, probs.cost4);
-        if (r < sum)
-        {
-            return 4;
-        }
-        sum += Mathf.Max(0, probs.cost5);
-        if (r < sum)
-        {
-            return 5;
+            cumulative += Mathf.Max(0, probs.GetProbability(i) * probabilityPool[i]);
+            if (r < cumulative)
+            {
+                return i + 1; // index 0 -> 1 cost
+            }
         }
 
         return 1;
@@ -115,26 +130,49 @@ public class ShopManager : MonoBehaviour
         
     }
 
+    private void RemoveFromPool(int id, int cost)
+    {
+        unitPool[id] -= 1;
+        var candidates = DataManager.unitData.FindAll(u => u.unitCost == cost && unitPool[u.unitID] > 0);
+
+        if (candidates.Count > 0) return;
+
+        probabilityPool[cost - 1] = 0;
+    }
+
+    private void AddToPool(int id, int cost)
+    {
+        unitPool[id] += 1;
+        if (unitPool[id] > 0)
+        {
+            probabilityPool[id] = 1;
+        }
+    }
+
     public void OnSelectUnitSlot(int slotNum)
     {
-        var id = unitSlots[slotNum].GetUnitID();
-        var cost = unitSlots[slotNum].GetUnitCost();
+        var slot = unitSlots[slotNum];
+        var id = slot.GetUnitID();
+        var cost = slot.GetUnitCost();
         if (id != -1)
         {
             if(player.AddUnit(id, 0, cost))
             {
-                unitPool[id] -= 1;
+                RemoveFromPool(id, cost);
+                slot.ClearSlot();
             }
         }
     }
 
     public void OnSelectItemSlot(int slotNum)
     {
-        var id = itemSlots[slotNum].GetItemID();
-        var cost = itemSlots[slotNum].GetItemCost();
+        var slot = itemSlots[slotNum];
+        var id = slot.GetItemID();
+        var cost = slot.GetItemCost();
         if (id != -1)
         {
             player.AddItem(id, cost);
+            slot.ClearSlot();
         }
     }
 }

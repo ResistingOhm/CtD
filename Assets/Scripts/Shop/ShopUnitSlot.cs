@@ -24,4 +24,10 @@ public class ShopUnitSlot: MonoBehaviour
 
         return -1;
     }
+
+    public void ClearSlot()
+    {
+        slotData = null;
+        this.gameObject.SetActive(false);
+    }
 }

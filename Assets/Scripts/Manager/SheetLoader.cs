@@ -6,8 +6,24 @@ public class SheetLoader : MonoBehaviour
 {
     string sheetUrl = "https://script.google.com/macros/s/AKfycbwgdWAgCmdqrC5hqbjFXomqBqfjZYXk_I_19Ein1jBGyncXZPvEyiGk-6mHRHqy2siy/exec";
 
+    [SerializeField]
+    private GameObject loadingPanel;
+
+    [SerializeField]
+    private GameObject errorPanel;
+
+    private bool isLoading = false;
+
     void Start()
     {
+        LoadData();
+    }
+
+    public void LoadData()
+    {
+        isLoading = true;
+        errorPanel.SetActive(false);
+        loadingPanel.SetActive(true);
         StartCoroutine(LoadAllSheets());
     }
 
@@ -32,11 +48,14 @@ public class SheetLoader : MonoBehaviour
                     DataManager.shopData.Add(i);
 
                 Debug.Log(DataManager.unitData);
+                isLoading = false;
+                loadingPanel.SetActive(false);
 
             }
             else
             {
                 Debug.LogError("Error: " + www.error);
+                errorPanel.SetActive(true);
             }
         }
     }
