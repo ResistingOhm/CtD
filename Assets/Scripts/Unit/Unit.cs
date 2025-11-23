@@ -151,7 +151,7 @@ public class Unit : MonoBehaviour
         }
         unitSprite.SetVisibility(true);
 
-        AfterDrop(currentTile.gameObject);
+        this.transform.position = currentTile.transform.position;
         RefreshStatus();
     }
 

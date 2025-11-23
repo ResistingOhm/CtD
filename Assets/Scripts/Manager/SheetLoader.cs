@@ -44,6 +44,8 @@ public class SheetLoader : MonoBehaviour
                     DataManager.unitSynergyData.Add(e);
                 foreach (var i in root.ItemData)
                     DataManager.itemData.Add(i);
+                foreach (var i in root.ShopProbabilityData)
+                    DataManager.shopData.Add(i);
                 foreach (var i in root.ClusterData)
                     DataManager.nodeClusterData.Add(i);
 

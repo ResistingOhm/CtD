@@ -245,6 +245,7 @@ public class MapGenerator : MonoBehaviour
 
     private NodeType GetNodeTypeForLayer(int layer)
     {
+        /*
         if (layer == 0) return NodeType.Battle;
         if (layer == totalLayers - 1) return NodeType.Boss;
 
@@ -264,7 +265,7 @@ public class MapGenerator : MonoBehaviour
             if (roll < sum) return (NodeType)i;
 
         }
-
+        */
         return NodeType.Battle;
     }
 

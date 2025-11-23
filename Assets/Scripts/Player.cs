@@ -13,7 +13,20 @@ public class Player : MonoBehaviour
     private DroppableTile[] itemInventory = new DroppableTile[9];
 
     public int gold;
+    public int exp;
     private UnitDeck deck;
+
+    public int[] expTable = new int[] {
+        4, 
+        6, 
+        10,
+        20,
+        36,
+        48,
+        60,
+        72,
+        84 
+    };
 
     void Start()
     {
@@ -65,6 +78,18 @@ public class Player : MonoBehaviour
         }
 
         return false;
+    }
+
+    public int AddEXP(int i)
+    {
+        if (gold < 4) return GetDeckLevel();
+        if (deck.deckLevel >= 10) return GetDeckLevel();
+
+        gold -= 4;
+        exp += i;
+        CheckLevelUp();
+
+        return GetDeckLevel();
     }
 
     public void SellUnit(Unit u)
@@ -147,6 +172,25 @@ public class Player : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void CheckLevelUp()
+    {
+        int lv = GetDeckLevel();
+        while (lv < 10 && exp >= expTable[lv - 1])
+        {
+            exp -= expTable[lv - 1];
+            lv++;
+
+            // 최대 레벨 도달 시 EXP 초과분 제거
+            if (lv >= 10)
+            {
+                exp = 0;
+                break;
+            }
+        }
+
+        deck.deckLevel = lv;
     }
 
     public int GetDeckLevel()

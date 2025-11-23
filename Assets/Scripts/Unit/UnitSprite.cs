@@ -5,6 +5,11 @@ public class UnitSprite : MonoBehaviour
     [SerializeField]
     private SpriteRenderer spriteRenderer;
 
+    public void SetUnitSprite(int id)
+    {
+
+    }
+
     public void SetLevelSprite(int lv)
     {
         switch (lv)
