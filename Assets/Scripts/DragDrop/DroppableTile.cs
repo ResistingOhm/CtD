@@ -11,6 +11,8 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
     private string acceptableTag;
 
     Vector3 defaultPos;
+    int defaultLayer;
+    int dragLayer = 11;
     Vector3 dragScale = new Vector3(1.3f, 1.3f, 1.3f);
     Vector3 defaultScale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -48,9 +50,11 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
         if (!canDrag) return;
         if (objectNow == null) return;
         defaultPos = this.transform.position;
+        defaultLayer = objectNow.gameObject.layer;
         objectNow.wasDroppedOnValidSlot = false;
 
         objectNow.transform.localScale = dragScale;
+        objectNow.gameObject.layer = dragLayer;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -64,8 +68,10 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
     {
         if (!canDrag) return;
         if (objectNow == null) return;
+
         if (!objectNow.wasDroppedOnValidSlot)
         {
+            objectNow.gameObject.layer = defaultLayer;
             objectNow.transform.localScale = defaultScale;
             objectNow.transform.position = defaultPos;
             return;
@@ -101,6 +107,7 @@ public class DroppableTile : MonoBehaviour, IDropHandler, IBeginDragHandler, IEn
         var gt = g.tag;
 
         g.transform.localScale = defaultScale;
+        g.gameObject.layer = defaultLayer;
 
         if (gt.Equals("Item") && objectNow != null && objectNow.tag.Equals("Ally"))
         {

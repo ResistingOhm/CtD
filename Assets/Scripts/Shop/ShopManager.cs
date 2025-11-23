@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ShopManager : MonoBehaviour
+public class ShopManager : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Player player;
 
     public ShopUnitSlot[] unitSlots = new ShopUnitSlot[5];
     public ShopItemSlot[] itemSlots = new ShopItemSlot[3];
+
+    public GameObject sellPanel;
 
     private List<int> unitPool;
     private int[] probabilityPool = { 1, 1, 1, 1, 1 };
@@ -49,7 +52,7 @@ public class ShopManager : MonoBehaviour
     public void OnReroll()
     {
         if (player.gold < 2) return;
-        player.gold -= 2;
+        player.GoldChange(-2);
 
         RerollShop();
     }
@@ -179,6 +182,45 @@ public class ShopManager : MonoBehaviour
         {
             player.AddItem(id, cost);
             slot.ClearSlot();
+        }
+    }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (eventData.pointerDrag != null)
+        {
+            sellPanel.SetActive(true);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        sellPanel.SetActive(false);
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        sellPanel.SetActive(false);
+
+        var t = eventData.pointerDrag.GetComponent<DroppableTile>();
+        if (!t.canDrag) return;
+        var g = t.objectNow;
+        if (g == null) return;
+
+        g.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        g.gameObject.layer = 11;
+
+        var gt = g.tag;
+
+        if (gt.Equals("Item"))
+        {
+            player.SellItem(g.GetComponent<Item>());
+            return;
+        }
+
+        if (gt.Equals("Ally"))
+        {
+            player.SellUnit(g.GetComponent<Unit>());
+            return;
         }
     }
 }

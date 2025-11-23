@@ -298,14 +298,14 @@ public class Unit : MonoBehaviour
     {
         if (g.CompareTag("Board"))
         {
-            if (!deck.IsAbleToAddUnitToField())
-            {
-                draggableObject.wasDroppedOnValidSlot = false;
-                return;
-            }
-
             if (!isDeck)
             {
+                if (!deck.IsAbleToAddUnitToField())
+                {
+                    draggableObject.wasDroppedOnValidSlot = false;
+                    return;
+                }
+
                 deck.AddUnitToField(this);
                 RefreshStatus();
             }

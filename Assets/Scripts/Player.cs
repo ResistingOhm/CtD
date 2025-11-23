@@ -11,9 +11,13 @@ public class Player : MonoBehaviour
     private DroppableTile[] unitInventory = new DroppableTile[9];
     [SerializeField]
     private DroppableTile[] itemInventory = new DroppableTile[9];
+    [SerializeField]
+    private PlayerUIManager uiManager;
 
-    public int gold;
-    public int exp;
+    private int life = 3;
+
+    public int gold = 0;
+    public int exp = 0;
     private UnitDeck deck;
 
     public int[] expTable = new int[] {
@@ -31,6 +35,10 @@ public class Player : MonoBehaviour
     void Start()
     {
         deck = GetComponent<UnitDeck>();
+        uiManager.SetgoldText(gold);
+        uiManager.SetLevelText(GetDeckLevel());
+        uiManager.SetExpText(exp);
+        uiManager.SetMaxExp(exp);
     }
 
     public bool AddUnit(int id, int level, int cost)
@@ -43,7 +51,7 @@ public class Player : MonoBehaviour
 
         if (UnitLevelUp(g))
         {
-            gold -= cost;
+            GoldChange(-cost);
             return true;
         }
 
@@ -52,7 +60,7 @@ public class Player : MonoBehaviour
             if (unitInventory[i].canAccept)
             {
                 g.SetCurrentTile(unitInventory[i]);
-                gold -= cost;
+                GoldChange(-cost);
                 return true;
             }
         }
@@ -71,7 +79,7 @@ public class Player : MonoBehaviour
             {
                 var g = ObjectPoolManager.Instance.SpawnFromPool<Item>("Item", Vector3.zero, Quaternion.identity);
                 g.InitialSetting(DataManager.itemData[id], itemInventory[i]);
-                gold -= cost;
+                GoldChange(-cost);
 
                 return true;
             }
@@ -85,27 +93,38 @@ public class Player : MonoBehaviour
         if (gold < 4) return GetDeckLevel();
         if (deck.deckLevel >= 10) return GetDeckLevel();
 
-        gold -= 4;
+        GoldChange(-4);
         exp += i;
         CheckLevelUp();
+
+        uiManager.SetExpText(exp);
 
         return GetDeckLevel();
     }
 
     public void SellUnit(Unit u)
     {
-        gold += u.GetUnitCost() * u.GetUnitLevel();
+        GoldChange(u.GetUnitCost() * (u.GetUnitLevel() + 1));
         var items = u.GetItems();
 
         for (int i = 0; i < items.Length; i++)
         {
-            SellItem(items[i]);   
+            if (items[i] != -1)
+                SellItem(items[i]);   
         }
+
+        RemoveUnit(u);
     }
 
     public void SellItem(int i)
     {
-        gold += DataManager.itemData[i].itemCost;
+        GoldChange(DataManager.itemData[i].itemCost);
+    }
+
+    public void SellItem(Item i)
+    {
+        GoldChange(i.GetItemCost());
+        i.DeleteAll();
     }
 
     public void RemoveUnit(Unit u)
@@ -180,7 +199,9 @@ public class Player : MonoBehaviour
         while (lv < 10 && exp >= expTable[lv - 1])
         {
             exp -= expTable[lv - 1];
-            lv++;
+            lv += 1;
+            uiManager.SetLevelText(lv);
+            uiManager.SetMaxExp(expTable[lv - 1]);
 
             // 최대 레벨 도달 시 EXP 초과분 제거
             if (lv >= 10)
@@ -191,6 +212,23 @@ public class Player : MonoBehaviour
         }
 
         deck.deckLevel = lv;
+    }
+
+    public void DecreaseLife()
+    {
+        life -= 1;
+        uiManager.DecreaseLife();
+        if (life <= 0)
+        {
+            //GameOver
+            Debug.Log("End");
+        }
+    }
+
+    public void GoldChange(int amount)
+    {
+        gold += amount;
+        uiManager.SetgoldText(gold);
     }
 
     public int GetDeckLevel()

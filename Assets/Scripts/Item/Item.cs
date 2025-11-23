@@ -70,4 +70,9 @@ public class Item : MonoBehaviour
         droppedTile.objectNow.GetComponent<Item>().AfterDrop(previousTile.gameObject);
         AfterDrop(droppedTile.gameObject);
     }
+
+    public int GetItemCost()
+    {
+        return itemData.itemCost;
+    }
 }
