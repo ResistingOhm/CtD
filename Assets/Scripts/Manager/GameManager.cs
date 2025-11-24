@@ -74,4 +74,15 @@ public class GameManager : MonoBehaviour
             yield return w;
         }
     }
+
+    WaitForSeconds w = new WaitForSeconds(1.5f);
+
+    public IEnumerator AfterEffectEnd(GameObject panel, System.Action nextFunction)
+    {
+        panel.SetActive(true);
+        yield return w;
+        panel.SetActive(false);
+
+        nextFunction?.Invoke();
+    }
 }

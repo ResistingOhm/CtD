@@ -8821,7 +8821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 418ca0d8b678dc24e82283fd67fb7aff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalLayers: 10
+  totalLayers: 20
   minNodesPerLayer: 3
   maxNodesPerLayer: 6
   seed: 0

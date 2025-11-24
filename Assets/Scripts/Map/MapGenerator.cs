@@ -95,6 +95,10 @@ public class MapGenerator : MonoBehaviour
                 }
 
                 float y = layerStartY + RandFloat(-layerRandY, layerRandY) + layer * layerSpacingY;
+                if (layer == 0)
+                {
+                    y = layerStartY;
+                }
                 finalHeight = y;
                 node.position = new Vector2(x, y);
 
