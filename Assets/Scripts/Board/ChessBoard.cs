@@ -116,6 +116,11 @@ public class ChessBoard : MonoBehaviour
         return board[x,y];
     }
 
+    public ChessGrid GetChessGrid(int x, int y)
+    {
+        return board[x,y];
+    }
+
     public ChessGrid PathFinding(ChessGrid s, ChessGrid e, bool tag = true)
     {
         List<ChessGrid> openList = new List<ChessGrid>();

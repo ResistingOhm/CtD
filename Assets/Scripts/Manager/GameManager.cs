@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     private int allyNum;
     private int enemyNum;
 
+    private EnemySpawnManager enemySpawnManager;
+
     private MapNode currentNode;
     private bool isFirstNode = true;
 
@@ -31,17 +33,15 @@ public class GameManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(this.gameObject);
+
+        enemySpawnManager = new EnemySpawnManager(player);
     }
 
-    public void TestEnemySpawn()
+    public void SpawnEnemy(int id, int level, Vector2Int pos)
     {
         var j = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
-        j.InitialSetting(DataManager.unitData[1], 0, enemyDeck, false);
-        j.AfterDrop(ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-6, 3)).gameObject);
-        
-        var k = ObjectPoolManager.Instance.SpawnFromPool<Unit>("Unit", Vector3.zero, Quaternion.identity);
-        k.InitialSetting(DataManager.unitData[1], 0, enemyDeck, false);
-        k.AfterDrop(ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1)).gameObject);
+        j.InitialSetting(DataManager.unitData[id], level, enemyDeck, false);
+        j.AfterDrop(ChessBoard.Instance.GetChessGrid(pos.x, pos.y).gameObject);
     }
 
     public void SetCurrentNode(MapNode node)
@@ -60,16 +60,13 @@ public class GameManager : MonoBehaviour
         //Fade?
         startButton.interactable = true;
 
-        TestEnemySpawn();
+        enemySpawnManager.Generate(node.layer, (node.type == NodeType.Elite));
 
         if (isFirstNode)
         {
             isFirstNode = false;
             return;
         }
-
-        player.AddEXP(4);
-        player.GoldChange(5);
     }
 
     public void OnStartFightButton()
@@ -145,8 +142,16 @@ public class GameManager : MonoBehaviour
                 e.DeleteAll();
             }
 
+            player.AddEXP(4);
+            player.GoldChange(5);
+
             mapUIManager.ToggleMap(true);
             currentNode.HighlightAvailableConnections();
+        } else
+        {
+            player.DecreaseLife();
+            startButton.interactable = true;
+            player.GoldChange(8);
         }
     }
 

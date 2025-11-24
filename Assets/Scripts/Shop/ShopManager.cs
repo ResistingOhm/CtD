@@ -149,7 +149,7 @@ public class ShopManager : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         probabilityPool[cost - 1] = 0;
     }
 
-    private void AddToPool(int id, int cost)
+    private void AddToPool(int id)
     {
         unitPool[id] += 1;
         if (unitPool[id] > 0)
@@ -219,7 +219,9 @@ public class ShopManager : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
         if (gt.Equals("Ally"))
         {
-            player.SellUnit(g.GetComponent<Unit>());
+            var a = g.GetComponent<Unit>();
+            AddToPool(a.GetUnitID());
+            player.SellUnit(a);
             return;
         }
     }

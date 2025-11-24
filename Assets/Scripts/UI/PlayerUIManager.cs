@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,8 +43,15 @@ public class PlayerUIManager : MonoBehaviour
         gold.text = g.ToString();
     }
 
-    public void DecreaseLife()
+    public void DecreaseLife(int l)
     {
-        Destroy(life[life.Length - 1]);
+        var g = life[l];
+        var r = g.GetComponent<Rigidbody2D>();
+        r.simulated = true;
+
+        r.AddForce(new Vector2(Random.Range(-100,100), 300));
+        r.AddTorque(1500);
+
+        Destroy(g, 3f);
     }
 }

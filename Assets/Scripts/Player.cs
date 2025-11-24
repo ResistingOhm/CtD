@@ -217,7 +217,7 @@ public class Player : MonoBehaviour
     public void DecreaseLife()
     {
         life -= 1;
-        uiManager.DecreaseLife();
+        uiManager.DecreaseLife(life);
         if (life <= 0)
         {
             //GameOver
