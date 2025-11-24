@@ -24,11 +24,24 @@ public class MapNode: MonoBehaviour
     public List<MapNode> fromNode;
 
     public Button button;
-    public Action<MapNode> onClick;
 
     void Awake()
     {
         button = GetComponent<Button>();
-        button.onClick.AddListener(() => onClick?.Invoke(this));
+    }
+
+    public void OnNodeClicked()
+    {
+        GameManager.Instance.SetCurrentNode(this);
+    }
+
+    public void HighlightAvailableConnections()
+    {
+
+        foreach (var node in toNode)
+        {
+            node.button.interactable = true;
+        }
+        
     }
 }

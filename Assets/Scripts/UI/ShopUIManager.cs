@@ -1,5 +1,9 @@
+using DG.Tweening;
+using System.Collections;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class ShopUIManager : MonoBehaviour
 {
@@ -11,6 +15,9 @@ public class ShopUIManager : MonoBehaviour
 
     private bool isOn = false;
 
+    public float moveDuration = 0.5f;
+
+
     public void toggleShop()
     {
 
@@ -18,13 +25,20 @@ public class ShopUIManager : MonoBehaviour
 
         if (isOn)
         {
-            shopPanel.pivot = new Vector2(0.5f, 1);
+            StartCoroutine(PanelAnimation(1));
             toggleButtonText.eulerAngles = new Vector3(0, 0, 0);
         }
         else
         {
-            shopPanel.pivot = new Vector2(0.5f, 0);
+            StartCoroutine(PanelAnimation(0));
             toggleButtonText.eulerAngles = new Vector3(0, 0, 180);
         }
+    }
+
+    private IEnumerator PanelAnimation(float n)
+    {
+        yield return shopPanel.DOPivotY(n, moveDuration)
+                         .SetEase(Ease.OutQuint)
+                         .WaitForCompletion();
     }
 }

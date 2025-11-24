@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,10 +11,21 @@ public class GameManager : MonoBehaviour
 
     public bool isRunning = false;
 
+    public Player player;
     public UnitDeck playerDeck;
     public UnitDeck enemyDeck;
 
-    public List<Unit> tempUnitPool = new List<Unit>();
+    private List<Unit> tempUnitPool = new List<Unit>();
+    private int allyNum;
+    private int enemyNum;
+
+    private MapNode currentNode;
+    private bool isFirstNode = true;
+
+    public MapUIManager mapUIManager;
+    public GameUIManager gameUIManager;
+
+    public Button startButton;
 
     void Awake()
     {
@@ -32,11 +44,57 @@ public class GameManager : MonoBehaviour
         k.AfterDrop(ChessBoard.Instance.GetGridFromWorldPos(new Vector2(-1, 1)).gameObject);
     }
 
-    public void StartFight()
+    public void SetCurrentNode(MapNode node)
     {
+        if (currentNode != null)
+        {
+            foreach (var n in currentNode.toNode)
+            {
+                n.button.interactable = false;
+            }
+        }
+
+        currentNode = node;
+        currentNode.button.interactable = false;
+        mapUIManager.ToggleMap(false);
+        //Fade?
+        startButton.interactable = true;
+
+        TestEnemySpawn();
+
+        if (isFirstNode)
+        {
+            isFirstNode = false;
+            return;
+        }
+
+        player.AddEXP(4);
+        player.GoldChange(5);
+    }
+
+    public void OnStartFightButton()
+    {
+        allyNum = playerDeck.units.Count;
+        enemyNum = enemyDeck.units.Count;
+
+        if (allyNum == 0)
+        {
+            allyNum = 0;
+            enemyNum = 0;
+            return;
+        }
+
+        startButton.interactable = false;
+
         tempUnitPool.AddRange(playerDeck.units);
         tempUnitPool.AddRange(enemyDeck.units);
 
+
+        StartCoroutine(StartBattle());
+    }
+
+    private void StartFight()
+    {
         ChessBoard.Instance.StartFighting();
 
         foreach (var unit in tempUnitPool)
@@ -49,7 +107,22 @@ public class GameManager : MonoBehaviour
         StartCoroutine(DoFightAction());
     }
 
-    public void EndFight()
+    public void EndFight(bool isWin)
+    {
+        List<Unit> winner = new List<Unit>();
+
+        if (isWin) winner = playerDeck.units;
+        else winner = enemyDeck.units;
+
+        foreach (var unit in winner)
+        {
+            unit.SetState(unit.winState);
+        }
+
+        StartCoroutine(EndBattle(isWin));
+    }
+
+    private void ResetUnitsPos(bool isWin)
     {
         isRunning = false;
 
@@ -60,9 +133,24 @@ public class GameManager : MonoBehaviour
             unit.EndFighting();
         }
         tempUnitPool.Clear();
+        allyNum = 0;
+        enemyNum = 0;
+
+        if (isWin)
+        {
+            for (int i = enemyDeck.units.Count - 1; i >= 0; i--)
+            {
+                var e = enemyDeck.units[i];
+                enemyDeck.RemoveUnitFromField(e);
+                e.DeleteAll();
+            }
+
+            mapUIManager.ToggleMap(true);
+            currentNode.HighlightAvailableConnections();
+        }
     }
 
-    IEnumerator DoFightAction()
+    private IEnumerator DoFightAction()
     {
         WaitForSeconds w = new WaitForSeconds(0.1f);
         while (isRunning)
@@ -75,14 +163,35 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    WaitForSeconds w = new WaitForSeconds(1.5f);
-
-    public IEnumerator AfterEffectEnd(GameObject panel, System.Action nextFunction)
+    public void UnitDeadCounter(bool isAlly)
     {
-        panel.SetActive(true);
-        yield return w;
-        panel.SetActive(false);
+        if (isAlly) allyNum -= 1;
+        else enemyNum -= 1;
 
-        nextFunction?.Invoke();
+        if (allyNum <= 0)
+        {
+            EndFight(false);
+        }
+        else if (enemyNum <= 0)
+        {
+            EndFight(true);
+        }
+
     }
+
+    private IEnumerator StartBattle()
+    {
+        yield return StartCoroutine(gameUIManager.PlayPanelAnimation("전투 시작!"));
+
+        StartFight();
+    }
+
+    private IEnumerator EndBattle(bool isWin)
+    {
+        string resultText = isWin ? "승리!" : "패배...";
+        yield return StartCoroutine(gameUIManager.PlayPanelAnimation(resultText));
+
+        ResetUnitsPos(isWin);
+    }
+
 }

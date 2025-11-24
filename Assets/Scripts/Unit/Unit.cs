@@ -20,6 +20,7 @@ public class Unit : MonoBehaviour
     private Rigidbody2D rb;
     private DraggableObject draggableObject;
     private UnitSprite unitSprite;
+    private bool isAlly;
 
     [Header("-Status")]
     private UnitTotalStatus status;
@@ -30,6 +31,7 @@ public class Unit : MonoBehaviour
     public AttackingState attackingState;
     public MovingState movingState;
     public DeadState deadState;
+    public WinningState winState;
 
     private void Awake()
     {
@@ -38,6 +40,7 @@ public class Unit : MonoBehaviour
         attackingState = new AttackingState(this);
         movingState = new MovingState(this);
         deadState = new DeadState(this);
+        winState = new WinningState(this);
 
         draggableObject = GetComponent<DraggableObject>();
         draggableObject.dropAction += AfterDrop;
@@ -59,6 +62,7 @@ public class Unit : MonoBehaviour
         deck = d;
 
         gameObject.tag = isAlly ? "Ally" : "Enemy";
+        this.isAlly = isAlly;
 
         if (tile  != null)
         {
@@ -85,6 +89,7 @@ public class Unit : MonoBehaviour
         level = 0;
         deck = null;
         gameObject.tag = "Untagged";
+        isAlly = false;
         if (currentTile != null)
         {
             currentTile.NowEmpty();
@@ -131,6 +136,7 @@ public class Unit : MonoBehaviour
     {
         draggableObject.enabled = false;
         currentPos = currentTile.gameObject.GetComponent<ChessGrid>();
+        currentPos.cost = byte.MaxValue;
     }
 
     public void DoAction()
@@ -143,6 +149,7 @@ public class Unit : MonoBehaviour
         draggableObject.enabled = true;
         unitCollider.enabled = true;
         SetState(idleState);
+        target = null;
 
         if (currentPos != null)
         {
@@ -216,7 +223,7 @@ public class Unit : MonoBehaviour
     public void SetTarget()
     {
         System.Collections.Generic.List<Unit> enemy;
-        if (this.CompareTag("Ally")) enemy = GameManager.Instance.enemyDeck.units;
+        if (isAlly) enemy = GameManager.Instance.enemyDeck.units;
         else enemy = GameManager.Instance.playerDeck.units;
 
         int min = 255;
@@ -247,11 +254,13 @@ public class Unit : MonoBehaviour
         unitCollider.enabled = false;
         SetVelocity(0);
         currentPos.cost = 1;
-        currentPos = null;
+
+        GameManager.Instance.UnitDeadCounter(isAlly);
     }
 
     public void UnitDisableAfterDeath()
     {
+        currentPos = null;
         unitSprite.SetVisibility(false);
     }
 

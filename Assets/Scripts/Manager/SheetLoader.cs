@@ -58,6 +58,8 @@ public class SheetLoader : MonoBehaviour
             else
             {
                 Debug.LogError("Error: " + www.error);
+                isLoading = false;
+                loadingPanel.SetActive(false);
                 errorPanel.SetActive(true);
             }
         }

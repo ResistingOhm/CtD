@@ -27,8 +27,6 @@ public class MapGenerator : MonoBehaviour
     public GameObject nodePrefab;
     public GameObject linePrefab;
 
-    private MapNode currentNode = null;
-
     private float finalHeight = 0f;
     private List<List<MapNode>> mapLayerData = new List<List<MapNode>>();
 
@@ -104,7 +102,6 @@ public class MapGenerator : MonoBehaviour
 
                 g.GetComponent<RectTransform>().localPosition = node.position;
                 //g.transform.localPosition = node.position;
-                node.onClick = OnNodeClicked;
 
                 node.type = GetNodeTypeForLayer(layer);
                 nodeLayer.Add(node);
@@ -194,33 +191,6 @@ public class MapGenerator : MonoBehaviour
                     CreateLine(node.position, target.position);
                 }
             }
-        }
-
-        HighlightAvailableConnections();
-    }
-
-    void OnNodeClicked(MapNode node)
-    {
-        if (currentNode == null || currentNode.toNode.Contains(node))
-        {
-            currentNode = node;
-            HighlightAvailableConnections();
-        }
-    }
-
-    void HighlightAvailableConnections()
-    {
-        if (currentNode == null) return;
-
-        var list = mapPanel.GetComponentsInChildren<MapNode>();
-
-        foreach (var layer in mapLayerData)
-        {
-            foreach (var node in layer)
-            {
-                node.button.interactable = currentNode.toNode.Contains(node);
-            }
-
         }
     }
 

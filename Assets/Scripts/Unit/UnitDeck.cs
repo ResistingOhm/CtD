@@ -94,8 +94,10 @@ public class UnitDeck : MonoBehaviour
 
             Debug.Log(unitSynergy[id][1]);
 
-
-            synergyUIManager.UpdateSynergyUISlot(id, unitSynergy[id]);
+            if (synergyUIManager != null)
+            {
+                synergyUIManager.UpdateSynergyUISlot(id, unitSynergy[id]);
+            }
         }
         
     }
