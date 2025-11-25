@@ -12,9 +12,9 @@ public class ResultManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI resultText;
 
-    public Image winImage;
-    public Image loseImage;
-    public Image errorImage;
+    public Sprite winImage;
+    public Sprite loseImage;
+    public Sprite errorImage;
 
     public string winText;
     public string loseText;
@@ -33,15 +33,15 @@ public class ResultManager : MonoBehaviour
         switch (isWin)
         {
             case 0:
-                resultImage = winImage;
+                resultImage.sprite = winImage;
                 resultText.text = winText;
                 break;
             case 1:
-                resultImage = loseImage;
+                resultImage.sprite = loseImage;
                 resultText.text = loseText;
                 break;
             default:
-                resultImage = errorImage;
+                resultImage.sprite = errorImage;
                 resultText.text = errorText;
                 break;
         }
