@@ -154,7 +154,8 @@ public class ShopManager : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         unitPool[id] += 1;
         if (unitPool[id] > 0)
         {
-            probabilityPool[id] = 1;
+            int i = DataManager.unitData[id].unitCost;
+            probabilityPool[i] = 1;
         }
     }
 

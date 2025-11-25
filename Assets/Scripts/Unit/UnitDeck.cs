@@ -57,16 +57,16 @@ public class UnitDeck : MonoBehaviour
 
     private void CalculateSynergy(int unitId, bool isAdd)
     {
+        var num = units.FindAll(u => u.GetUnitID() == unitId);
         if (isAdd)
         {
-            foreach (var u in units)
-            {
-                if (u.GetUnitID() == unitId) return;
-            }
+            if (num.Count > 0) return;
+        } else
+        {
+            if (num.Count > 1) return;
         }
 
-
-        var synergy = DataManager.unitData[unitId].unitSynergy;
+            var synergy = DataManager.unitData[unitId].unitSynergy;
         for (int i = 0; i < synergy.Length; i++)
         {
             int id = synergy[i];
