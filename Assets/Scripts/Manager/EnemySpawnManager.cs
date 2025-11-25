@@ -19,6 +19,7 @@ public class EnemySpawnManager
         int targetDifficulty = GetStageTargetDifficulty(layer);
         if (isElite) targetDifficulty = Mathf.RoundToInt(targetDifficulty * 1.3f);
         int currentDifficulty = 0;
+        int threshold = Mathf.RoundToInt(targetDifficulty * 0.2f);
 
         while (currentDifficulty < targetDifficulty && result.Count < 10)
         {
@@ -29,14 +30,17 @@ public class EnemySpawnManager
 
             UnitData unit = candidates[Random.Range(0, candidates.Count)];
             int level = Random.Range(0, 3);
+            if (!isElite) level = Mathf.Clamp(level, 0, 1);
 
-            int difficulty = 2 * c * level;
+            int difficulty = 2 * c * (level + 1);
 
             // 난이도 초과 방지
-            if (currentDifficulty + difficulty > targetDifficulty +5)
+            if (currentDifficulty + difficulty > targetDifficulty + threshold)
                 continue;
 
             Vector2Int pos = GetRandomPos(unit.baseRange);
+
+            if (pos == null || pos.y < 4) continue;
 
             GameManager.Instance.SpawnEnemy(unit.unitID, level, pos);
 
@@ -81,13 +85,21 @@ public class EnemySpawnManager
 
     Vector2Int GetRandomPos(int range)
     {
-        int y = Mathf.RoundToInt(Mathf.Lerp(4f, 7f, (range - 1) / 4f));
-
         Vector2Int pos;
         int safety = 0;
 
         do
         {
+            int y;
+            if (range >= 3)
+            {
+                y = Random.Range(6, 8);
+            }
+            else
+            {
+                y = Random.Range(4, 6);
+            }
+
             int x = Random.Range(0, 8);
             pos = new Vector2Int(x, y);
 

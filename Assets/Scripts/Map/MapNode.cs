@@ -32,7 +32,10 @@ public class MapNode: MonoBehaviour
 
     public void OnNodeClicked()
     {
-        GameManager.Instance.SetCurrentNode(this);
+        FadeManager.Instance.FadeOut(() =>
+        {
+            GameManager.Instance.SetCurrentNode(this);
+        });
     }
 
     public void HighlightAvailableConnections()

@@ -29,7 +29,8 @@ public class Player : MonoBehaviour
         48,
         60,
         72,
-        84 
+        84,
+        0,
     };
 
     void Start()
@@ -214,15 +215,11 @@ public class Player : MonoBehaviour
         deck.deckLevel = lv;
     }
 
-    public void DecreaseLife()
+    public int DecreaseLife()
     {
         life -= 1;
         uiManager.DecreaseLife(life);
-        if (life <= 0)
-        {
-            //GameOver
-            Debug.Log("End");
-        }
+        return life;
     }
 
     public void GoldChange(int amount)

@@ -5,7 +5,11 @@ public class TitleManager : MonoBehaviour
 {
     public void OnStart()
     {
-        SceneManager.LoadScene(1);
+        PlayerPrefs.SetInt("isWin", -1);
+        FadeManager.Instance.FadeOut(() =>
+        {
+            SceneManager.LoadScene(1);
+        });
     }
 
     public void OnQuit()

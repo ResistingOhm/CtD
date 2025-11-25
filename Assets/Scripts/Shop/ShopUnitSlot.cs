@@ -3,10 +3,17 @@ using UnityEngine;
 public class ShopUnitSlot: MonoBehaviour
 {
     private UnitData slotData;
+    private ShopUnitSlotUIManager uiManager;
+
+    void Awake()
+    {
+        uiManager = GetComponent<ShopUnitSlotUIManager>();
+    }
 
     public void SetSlotData(UnitData d)
     {
         slotData = d;
+        uiManager.SetSlotData(d);
     }
 
     public int GetUnitID()

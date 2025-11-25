@@ -59,7 +59,7 @@ public class SettingManager : MonoBehaviour
         audioPanel.SetActive(false);
         quitPanel.SetActive(false);
 
-        titleText.text = "Title";
+        titleText.text = "¼³Á¤";
     }
 
     public void QuitTheGame()

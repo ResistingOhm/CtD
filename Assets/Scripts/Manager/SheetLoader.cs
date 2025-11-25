@@ -12,16 +12,24 @@ public class SheetLoader : MonoBehaviour
     [SerializeField]
     private GameObject errorPanel;
 
-    private bool isLoading = false;
+    [SerializeField]
+    private LoadingIcon icon;
 
     void Start()
     {
-        LoadData();
+        if (DataManager.FirstInstall)
+        {
+            LoadData();
+        }
+        else
+        {
+            icon.StopRotation();
+            loadingPanel.SetActive(false);
+        }
     }
 
     public void LoadData()
     {
-        isLoading = true;
         errorPanel.SetActive(false);
         loadingPanel.SetActive(true);
         StartCoroutine(LoadAllSheets());
@@ -51,14 +59,17 @@ public class SheetLoader : MonoBehaviour
 
                 Debug.Log("Succesfully load Data");
 
-                isLoading = false;
-                loadingPanel.SetActive(false);
+                DataManager.FirstInstall = false;
 
+                FadeManager.Instance.FadeOut(() =>
+                {
+                    icon.StopRotation();
+                    loadingPanel.SetActive(false);
+                });
             }
             else
             {
                 Debug.LogError("Error: " + www.error);
-                isLoading = false;
                 loadingPanel.SetActive(false);
                 errorPanel.SetActive(true);
             }

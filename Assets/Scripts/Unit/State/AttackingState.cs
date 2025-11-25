@@ -8,6 +8,7 @@ public class AttackingState : IUnitState
 {
     private Unit unit;
     private float currentTime;
+    private float attackInterval;
 
     public AttackingState(Unit u)
     {
@@ -18,6 +19,7 @@ public class AttackingState : IUnitState
     {
         //Set Animation or Sprite to Attack
         currentTime = 0f;
+        attackInterval = 1f / unit.GetAttackSpeed();
     }
 
     public void Update()
@@ -42,10 +44,11 @@ public class AttackingState : IUnitState
             return;
         }
 
-        if (currentTime > 1 / unit.GetAttackSpeed())
+        if (currentTime > attackInterval)
         {
             currentTime = 0f;
             var dealt = unit.target.GetDamage(unit.GetAttack());
+            Debug.Log(dealt);
             unit.GainHealth(dealt * unit.GetLifeSteal() / 100);
         }
     }

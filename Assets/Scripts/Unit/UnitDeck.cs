@@ -75,7 +75,6 @@ public class UnitDeck : MonoBehaviour
 
             unitSynergy[id][0] += isAdd?  1:-1;
 
-            Debug.Log(unitSynergy[id][0]);
 
             if (unitSynergy[id][0] < 0)
             {
@@ -91,8 +90,6 @@ public class UnitDeck : MonoBehaviour
                 }
                 unitSynergy[id][1] = 0;
             }
-
-            Debug.Log(unitSynergy[id][1]);
 
             if (synergyUIManager != null)
             {

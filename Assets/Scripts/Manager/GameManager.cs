@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -22,12 +23,14 @@ public class GameManager : MonoBehaviour
     private EnemySpawnManager enemySpawnManager;
 
     private MapNode currentNode;
-    private bool isFirstNode = true;
+    private bool isLast = false;
 
     public MapUIManager mapUIManager;
     public GameUIManager gameUIManager;
 
     public Button startButton;
+
+    public Transform unitHpContainer;
 
     void Awake()
     {
@@ -60,13 +63,9 @@ public class GameManager : MonoBehaviour
         //Fade?
         startButton.interactable = true;
 
-        enemySpawnManager.Generate(node.layer, (node.type == NodeType.Elite));
+        if (currentNode.layer >= 19) isLast = true;
 
-        if (isFirstNode)
-        {
-            isFirstNode = false;
-            return;
-        }
+        enemySpawnManager.Generate(node.layer, (node.type == NodeType.Elite));
     }
 
     public void OnStartFightButton()
@@ -135,6 +134,16 @@ public class GameManager : MonoBehaviour
 
         if (isWin)
         {
+            if (isLast)
+            {
+                PlayerPrefs.SetInt("isWin", 0);
+                StartCoroutine(AfterLose(() =>
+                {
+                    SceneManager.LoadScene(2);
+                }));
+
+                return;
+            }
             for (int i = enemyDeck.units.Count - 1; i >= 0; i--)
             {
                 var e = enemyDeck.units[i];
@@ -149,9 +158,20 @@ public class GameManager : MonoBehaviour
             currentNode.HighlightAvailableConnections();
         } else
         {
-            player.DecreaseLife();
-            startButton.interactable = true;
-            player.GoldChange(8);
+            int l = player.DecreaseLife();
+            if (l > 0)
+            {
+                startButton.interactable = true;
+                player.GoldChange(8);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("isWin", 1);
+                StartCoroutine(AfterLose(() =>
+                {
+                    SceneManager.LoadScene(2);
+                }));
+            }
         }
     }
 
@@ -197,6 +217,13 @@ public class GameManager : MonoBehaviour
         yield return StartCoroutine(gameUIManager.PlayPanelAnimation(resultText));
 
         ResetUnitsPos(isWin);
+    }
+
+    private IEnumerator AfterLose(Action action)
+    {
+        yield return new WaitForSeconds(3);
+
+        FadeManager.Instance.FadeOut(action);
     }
 
 }

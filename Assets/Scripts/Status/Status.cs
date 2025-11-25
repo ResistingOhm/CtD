@@ -23,7 +23,7 @@ public class Status
             maxHealth = (int) (u.baseHealth * u.healthRate[level]),
             attack = (int) (u.baseAttack * u.attackRate[level]),
             defense = (int)(u.baseDefense * u.defenseRate[level]),
-            attackSpeed = (int) (u.baseAttackSpeed * u.attackSpeedRate[level]),
+            attackSpeed = (u.baseAttackSpeed * u.attackSpeedRate[level]),
             healthRegen = u.baseHealthRegen,
             lifeSteal = u.baseLifeSteal,
             evade = u.baseEvade,

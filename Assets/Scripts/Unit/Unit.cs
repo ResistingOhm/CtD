@@ -74,6 +74,8 @@ public class Unit : MonoBehaviour
         status = new UnitTotalStatus();
         status.synergy = new Status[GetUnitSynergy().Length];
         UnitStatusSetting();
+
+        unitSprite.InitialSetting(unitData.unitID, level, status.maxHealth);
     }
 
     public void SetCurrentTile(DroppableTile tile)
@@ -99,7 +101,7 @@ public class Unit : MonoBehaviour
         items[1] = -1;
         items[2] = -1;
 
-        unitSprite.SetLevelSprite(level);
+        unitSprite.hpBar.gameObject.SetActive(false);
 
         this.gameObject.SetActive(false);
     }
@@ -212,6 +214,8 @@ public class Unit : MonoBehaviour
         UnitStatusSetting();
         if (isDeck) SynergyStatusSetting();
         status.RefreshTotalStatus(isDeck);
+
+        unitSprite.RefreshHp(status.maxHealth);
     }
 
     public void SetVelocity(float p)
@@ -242,8 +246,9 @@ public class Unit : MonoBehaviour
 
     public int GetDamage(int damage)
     {
-        int i = damage - damage * status.defense / 100;
+        int i = Mathf.CeilToInt(damage - (damage * status.defense / 100));
         if (i > 0) status.unitCurrentHealth -= i;
+        unitSprite.SetCurrentHp(status.unitCurrentHealth);
         if (status.unitCurrentHealth <= 0) SetState(deadState);
 
         return i;
@@ -268,6 +273,7 @@ public class Unit : MonoBehaviour
     {
         status.unitCurrentHealth += n;
         if (status.unitCurrentHealth > status.maxHealth) status.unitCurrentHealth = status.maxHealth;
+        unitSprite.SetCurrentHp(status.unitCurrentHealth);
     }
 
     public bool AddItem(ItemData i)

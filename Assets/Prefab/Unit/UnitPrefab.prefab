@@ -178,6 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0abc671140edbdf459b075d16fb89430, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: 0
   isDeck: 0
   currentTile: {fileID: 0}
   currentPos: {fileID: 0}
@@ -220,3 +221,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6304792312323610660}
+  hpContainer: {fileID: 0}
+  hpBarPrefab: {fileID: 8767627017081345094, guid: df03ca7a8d2403c4994651667634519b, type: 3}
