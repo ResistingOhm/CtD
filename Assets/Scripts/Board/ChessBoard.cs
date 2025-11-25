@@ -19,6 +19,8 @@ public class ChessBoard : MonoBehaviour
     [SerializeField]
     private Vector2Int boardStartPosition;
 
+    private Color black = new Color(50/255f, 50 / 255f, 50 / 255f, 255 / 255f);
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -42,7 +44,7 @@ public class ChessBoard : MonoBehaviour
                 GameObject g = Instantiate(chessGrid, worldPos, Quaternion.identity);
                 g.transform.SetParent(this.transform);
                 var n = g.GetComponent<ChessGrid>();
-                n.SetMainColor(isBlack? Color.black: Color.white);
+                n.SetMainColor(isBlack? black: Color.white);
                 n.SetIndex(x, y);
                 g.AddComponent(typeof(DroppableTile));
                 var t = g.GetComponent<DroppableTile>();
