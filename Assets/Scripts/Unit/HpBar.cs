@@ -5,12 +5,15 @@ public class HpBar : MonoBehaviour
 {
     [SerializeField]
     private Image levelSprite;
+
+    public Sprite[] level;
+
     [SerializeField]
     private Slider hpSlider;
 
-    public void SetLevelColor(Color c)
+    public void SetLevelColor(int i)
     {
-        levelSprite.color = c;
+        levelSprite.sprite = level[i];
     }
 
     public void RefreshHp(int mxHp)

@@ -1,10 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum MovDir
+{
+    UPI,
+    UPM,
+    LEFTI,
+    LEFTM,
+    RIGHTI,
+    RIGHTM,
+    DOWNI,
+    DOWNM,
+}
+
 public class UnitSprite : MonoBehaviour
 {
     [SerializeField]
     private SpriteRenderer spriteRenderer;
+
+    private Sprite[] sprites;
 
     public GameObject hpBarPrefab;
 
@@ -33,27 +47,52 @@ public class UnitSprite : MonoBehaviour
 
     private void SetUnitSprite(int id)
     {
+        sprites = DataManager.unitSpriteData[id];
+    }
 
-
+    public void SetMoveSprite(MovDir n)
+    {
+        switch (n)
+        {
+            case MovDir.UPI:
+                spriteRenderer.sprite = sprites[1];
+                spriteRenderer.flipX = false;
+                break;
+            case MovDir.LEFTI:
+                spriteRenderer.sprite = sprites[2];
+                spriteRenderer.flipX = false;
+                break;
+            case MovDir.RIGHTI:
+                spriteRenderer.sprite = sprites[1];
+                spriteRenderer.flipX = true;
+                break;
+            case MovDir.DOWNI:
+                spriteRenderer.sprite = sprites[0];
+                spriteRenderer.flipX = false;
+                break;
+            case MovDir.UPM:
+                spriteRenderer.sprite = sprites[4];
+                spriteRenderer.flipX = false;
+                break;
+            case MovDir.LEFTM:
+                spriteRenderer.sprite = sprites[5];
+                spriteRenderer.flipX = false;
+                break;
+            case MovDir.RIGHTM:
+                spriteRenderer.sprite = sprites[5];
+                spriteRenderer.flipX = true;
+                break;
+            case MovDir.DOWNM:
+                spriteRenderer.sprite = sprites[3];
+                spriteRenderer.flipX = false;
+                break;
+                
+        }
     }
 
     public void SetLevelSprite(int lv)
     {
-        switch (lv)
-        {
-            case 0:
-                hpBar.SetLevelColor(Color.blue);
-                break;
-            case 1:
-                hpBar.SetLevelColor(Color.gray);
-                break;
-            case 2:
-                hpBar.SetLevelColor(Color.yellow);
-                break;
-            default:
-                hpBar.SetLevelColor(Color.green);
-                break;
-        }
+        hpBar.SetLevelColor(lv);
     }
 
     public void RefreshHp(int mxHp)
