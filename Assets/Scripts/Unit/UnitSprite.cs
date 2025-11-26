@@ -65,7 +65,7 @@ public class UnitSprite : MonoBehaviour
                 spriteRenderer.flipX = false;
                 break;
             case MovDir.RIGHTI:
-                spriteRenderer.sprite = sprites[1];
+                spriteRenderer.sprite = sprites[2];
                 spriteRenderer.flipX = true;
                 break;
             case MovDir.DOWNI:

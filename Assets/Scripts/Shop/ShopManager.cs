@@ -135,7 +135,7 @@ public class ShopManager : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public void OnclickExpButton(Button button)
     {
-        int i = player.AddEXP(4);
+        int i = player.BuyEXP(4);
         if (i >= 10) button.interactable = false;
     }
 
@@ -208,18 +208,19 @@ public class ShopManager : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         if (g == null) return;
 
         g.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        g.gameObject.layer = 11;
 
         var gt = g.tag;
 
         if (gt.Equals("Item"))
         {
+            g.gameObject.layer = 10;
             player.SellItem(g.GetComponent<Item>());
             return;
         }
 
         if (gt.Equals("Ally"))
         {
+            g.gameObject.layer = 8;
             var a = g.GetComponent<Unit>();
             AddToPool(a.GetUnitID());
             player.SellUnit(a);

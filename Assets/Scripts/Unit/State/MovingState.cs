@@ -28,6 +28,7 @@ public class MovingState : IUnitState
     public void Update()
     {
         if (Vector2.Distance(unit.transform.position, unit.currentPos.transform.position) < 0.1f) unit.SetState(unit.idleState);
+        if (Vector2.Distance(unit.transform.position, unit.currentPos.transform.position) > 1.1f) unit.SetState(unit.idleState);
     }
 
     public void Exit()

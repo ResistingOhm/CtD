@@ -89,12 +89,17 @@ public class Player : MonoBehaviour
         return false;
     }
 
-    public int AddEXP(int i)
+    public int BuyEXP(int i)
     {
         if (gold < 4) return GetDeckLevel();
         if (deck.deckLevel >= 10) return GetDeckLevel();
 
         GoldChange(-4);
+        return AddEXP(i);
+    }
+
+    public int AddEXP(int i)
+    {
         exp += i;
         CheckLevelUp();
 
