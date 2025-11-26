@@ -14,6 +14,12 @@ TextureImporter:
   - first:
       213: 4476201133980777671
     second: Sprite_13_3
+  - first:
+      213: 6804467991368575147
+    second: Sprite_13_4
+  - first:
+      213: -6517254740852976284
+    second: Sprite_13_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -127,7 +133,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 33
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -147,9 +153,9 @@ TextureImporter:
       name: Sprite_13_1
       rect:
         serializedVersion: 2
-        x: 34
+        x: 16
         y: 0
-        width: 14
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -169,10 +175,10 @@ TextureImporter:
       name: Sprite_13_2
       rect:
         serializedVersion: 2
-        x: 47
+        x: 32
         y: 0
-        width: 34
-        height: 15
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,10 +197,10 @@ TextureImporter:
       name: Sprite_13_3
       rect:
         serializedVersion: 2
-        x: 82
+        x: 48
         y: 0
-        width: 14
-        height: 15
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,11 +215,55 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Sprite_13_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba82a0726935e6e50800000000000000
+      internalID: 6804467991368575147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_13_5
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4655ab4d75f0e85a0800000000000000
+      internalID: -6517254740852976284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -227,6 +277,8 @@ TextureImporter:
       Sprite_13_1: -4699457573592472153
       Sprite_13_2: 152404533352250301
       Sprite_13_3: 4476201133980777671
+      Sprite_13_4: 6804467991368575147
+      Sprite_13_5: -6517254740852976284
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

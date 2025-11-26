@@ -10,6 +10,8 @@ public class AttackingState : IUnitState
     private float currentTime;
     private float attackInterval;
 
+    private Vector2 dir;
+
     public AttackingState(Unit u)
     {
         this.unit = u;
@@ -20,6 +22,13 @@ public class AttackingState : IUnitState
         //Set Animation or Sprite to Attack
         currentTime = 0f;
         attackInterval = 1f / unit.GetAttackSpeed();
+
+        dir = unit.target.currentPos.gridIndex - unit.currentPos.gridIndex;
+
+        if (dir.y > 0) unit.ChangeSprite(MovDir.UPM);
+        if (dir.y < 0) unit.ChangeSprite(MovDir.DOWNM);
+        if (dir.x > 0) unit.ChangeSprite(MovDir.RIGHTM);
+        if (dir.x < 0) unit.ChangeSprite(MovDir.LEFTM);
     }
 
     public void Update()
@@ -48,14 +57,16 @@ public class AttackingState : IUnitState
         {
             currentTime = 0f;
             var dealt = unit.target.GetDamage(unit.GetAttack());
-            Debug.Log(dealt);
             unit.GainHealth(dealt * unit.GetLifeSteal() / 100);
         }
     }
 
     public void Exit()
     {
-        //nothing happen?
+        if (dir.y > 0) unit.ChangeSprite(MovDir.UPI);
+        if (dir.y < 0) unit.ChangeSprite(MovDir.DOWNI);
+        if (dir.x > 0) unit.ChangeSprite(MovDir.RIGHTI);
+        if (dir.x < 0) unit.ChangeSprite(MovDir.LEFTI);
     }
 
 }

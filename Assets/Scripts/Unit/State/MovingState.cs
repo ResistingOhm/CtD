@@ -7,6 +7,7 @@ using static UnityEngine.GraphicsBuffer;
 public class MovingState : IUnitState
 {
     private Unit unit;
+    private Vector2 dir;
 
     public MovingState(Unit u)
     {
@@ -16,7 +17,12 @@ public class MovingState : IUnitState
     public void Enter()
     {
         //Set Animation or Sprite to Move
-        unit.SetVelocity(2.5f);
+        dir = unit.SetVelocity(2.5f);
+
+        if (dir.y > 0) unit.ChangeSprite(MovDir.UPM);
+        if (dir.y < 0) unit.ChangeSprite(MovDir.DOWNM);
+        if (dir.x > 0) unit.ChangeSprite(MovDir.RIGHTM);
+        if (dir.x < 0) unit.ChangeSprite(MovDir.LEFTM);
     }
 
     public void Update()
@@ -28,5 +34,10 @@ public class MovingState : IUnitState
     {
         unit.SetVelocity(0f);
         unit.transform.position = unit.currentPos.transform.position;
+
+        if (dir.y > 0) unit.ChangeSprite(MovDir.UPI);
+        if (dir.y < 0) unit.ChangeSprite(MovDir.DOWNI);
+        if (dir.x > 0) unit.ChangeSprite(MovDir.RIGHTI);
+        if (dir.x < 0) unit.ChangeSprite(MovDir.LEFTI);
     }
 }

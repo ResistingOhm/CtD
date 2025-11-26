@@ -102,6 +102,7 @@ public class Unit : MonoBehaviour
         items[2] = -1;
 
         unitSprite.hpBar.gameObject.SetActive(false);
+        unitSprite.ClearSprites();
 
         this.gameObject.SetActive(false);
     }
@@ -159,6 +160,7 @@ public class Unit : MonoBehaviour
             currentPos = null;
         }
         unitSprite.SetVisibility(true);
+        ChangeSprite(MovDir.DOWNI);
 
         this.transform.position = currentTile.transform.position;
         RefreshStatus();
@@ -218,10 +220,12 @@ public class Unit : MonoBehaviour
         unitSprite.RefreshHp(status.maxHealth);
     }
 
-    public void SetVelocity(float p)
+    public Vector2 SetVelocity(float p)
     {
         Vector2 dir = currentPos.transform.position - transform.position;
         rb.linearVelocity = dir.normalized * p;
+
+        return dir;
     }
 
     public void SetTarget()
@@ -307,6 +311,11 @@ public class Unit : MonoBehaviour
         currentState.Exit();
         currentState = state;
         currentState.Enter();
+    }
+
+    public void ChangeSprite(MovDir m)
+    {
+        unitSprite.SetMoveSprite(m);
     }
 
     public void AfterDrop(GameObject g)

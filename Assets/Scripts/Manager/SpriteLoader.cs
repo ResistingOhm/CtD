@@ -27,15 +27,23 @@ public class SpriteLoader : MonoBehaviour
             spriteGroups[groupName].Add(sprite);
         }
 
-        foreach (var group in spriteGroups)
+        foreach (var group in spriteGroups
+                .OrderBy(g =>
+                {
+                    string[] parts = g.Key.Split('_');
+                    return int.Parse(parts[1]);   // 그룹명 숫자 기준 정렬
+                }))
         {
-            // 스프라이트 이름을 기준으로 오름차순 정렬합니다.
-            List<Sprite> sortedGroup = group.Value.OrderBy(s => s.name).ToList();
+            List<Sprite> sortedGroup = group.Value
+                .OrderBy(s =>
+                {
+                    string[] parts = s.name.Split('_');
+                    return int.Parse(parts[2]); // 스프라이트 번호 숫자 정렬
+                }).ToList();
 
-            // 정렬된 리스트를 배열로 변환하여 groupedSprites에 추가합니다.
             DataManager.unitSpriteData.Add(sortedGroup.ToArray());
         }
-
+        /*
         // 5. 결과 확인 (디버그 용도)
         Debug.Log("총 " + DataManager.unitSpriteData.Count + "개의 스프라이트 그룹을 찾았습니다.");
         for (int i = 0; i < DataManager.unitSpriteData.Count; i++)
@@ -46,5 +54,6 @@ public class SpriteLoader : MonoBehaviour
                 Debug.Log("- " + s.name);
             }
         }
+        */
     }
 }

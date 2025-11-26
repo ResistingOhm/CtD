@@ -14,6 +14,12 @@ TextureImporter:
   - first:
       213: 3237746042937166774
     second: Sprite_49_3
+  - first:
+      213: -3328521470114500285
+    second: Sprite_49_4
+  - first:
+      213: -984979275805537361
+    second: Sprite_49_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -33,7 +39,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 0
+  isReadable: 1
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -127,7 +133,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 33
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -147,9 +153,9 @@ TextureImporter:
       name: Sprite_49_1
       rect:
         serializedVersion: 2
-        x: 34
+        x: 16
         y: 0
-        width: 14
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -169,10 +175,10 @@ TextureImporter:
       name: Sprite_49_2
       rect:
         serializedVersion: 2
-        x: 47
+        x: 32
         y: 0
-        width: 34
-        height: 15
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,10 +197,10 @@ TextureImporter:
       name: Sprite_49_3
       rect:
         serializedVersion: 2
-        x: 81
+        x: 48
         y: 0
-        width: 15
-        height: 15
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,11 +215,55 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Sprite_49_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3417092bb57bec1d0800000000000000
+      internalID: -3328521470114500285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_49_5
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fab4d7a3196a452f0800000000000000
+      internalID: -984979275805537361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -227,6 +277,8 @@ TextureImporter:
       Sprite_49_1: 7344163459840205893
       Sprite_49_2: -1051348984007628508
       Sprite_49_3: 3237746042937166774
+      Sprite_49_4: -3328521470114500285
+      Sprite_49_5: -984979275805537361
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

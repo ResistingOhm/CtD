@@ -48,6 +48,8 @@ public class UnitSprite : MonoBehaviour
     private void SetUnitSprite(int id)
     {
         sprites = DataManager.unitSpriteData[id];
+        spriteRenderer.sprite = sprites[0];
+        spriteRenderer.flipX = false;
     }
 
     public void SetMoveSprite(MovDir n)
@@ -88,6 +90,11 @@ public class UnitSprite : MonoBehaviour
                 break;
                 
         }
+    }
+
+    public void ClearSprites()
+    {
+        sprites = new Sprite[6];
     }
 
     public void SetLevelSprite(int lv)

@@ -14,6 +14,12 @@ TextureImporter:
   - first:
       213: -4210821459041178320
     second: Sprite_15_3
+  - first:
+      213: -2029050579351022960
+    second: Sprite_15_4
+  - first:
+      213: -3792438189013538156
+    second: Sprite_15_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -127,7 +133,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 33
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -147,9 +153,9 @@ TextureImporter:
       name: Sprite_15_1
       rect:
         serializedVersion: 2
-        x: 34
+        x: 16
         y: 0
-        width: 14
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -169,10 +175,10 @@ TextureImporter:
       name: Sprite_15_2
       rect:
         serializedVersion: 2
-        x: 47
+        x: 32
         y: 0
-        width: 34
-        height: 15
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,10 +197,10 @@ TextureImporter:
       name: Sprite_15_3
       rect:
         serializedVersion: 2
-        x: 82
+        x: 48
         y: 0
-        width: 14
-        height: 15
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,11 +215,55 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Sprite_15_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0925b7a9f3d57d3e0800000000000000
+      internalID: -2029050579351022960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_15_5
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49ae83f6f8d8e5bc0800000000000000
+      internalID: -3792438189013538156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -227,6 +277,8 @@ TextureImporter:
       Sprite_15_1: -6706003925208625402
       Sprite_15_2: -2246780598058846048
       Sprite_15_3: -4210821459041178320
+      Sprite_15_4: -2029050579351022960
+      Sprite_15_5: -3792438189013538156
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

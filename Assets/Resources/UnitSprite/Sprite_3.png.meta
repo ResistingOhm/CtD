@@ -11,6 +11,15 @@ TextureImporter:
   - first:
       213: 3305964156429670538
     second: Sprite_3_2
+  - first:
+      213: -8137334978573962582
+    second: Sprite_3_3
+  - first:
+      213: -7351314368624014191
+    second: Sprite_3_4
+  - first:
+      213: -3725003429491049703
+    second: Sprite_3_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -124,7 +133,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 33
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -144,9 +153,9 @@ TextureImporter:
       name: Sprite_3_1
       rect:
         serializedVersion: 2
-        x: 34
+        x: 16
         y: 0
-        width: 47
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -166,9 +175,9 @@ TextureImporter:
       name: Sprite_3_2
       rect:
         serializedVersion: 2
-        x: 82
+        x: 32
         y: 0
-        width: 14
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -184,11 +193,77 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Sprite_3_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa2fcbf43f0621f80800000000000000
+      internalID: -8137334978573962582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_3_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19cc0f9d782eaf990800000000000000
+      internalID: -7351314368624014191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_3_5
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91bf216ed112e4cc0800000000000000
+      internalID: -3725003429491049703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -201,6 +276,9 @@ TextureImporter:
       Sprite_3_0: 964063397759449543
       Sprite_3_1: 3339314965887013791
       Sprite_3_2: 3305964156429670538
+      Sprite_3_3: -8137334978573962582
+      Sprite_3_4: -7351314368624014191
+      Sprite_3_5: -3725003429491049703
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
